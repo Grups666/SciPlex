@@ -1,0 +1,2 @@
+# Skill environment - do not commit actual secrets
+.env.local
