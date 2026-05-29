@@ -169,7 +169,7 @@ Recommended models: Claude 3.5 Sonnet+, OpenAI o1, or similar high-capability re
 
 ## Version
 
-v0.2.4 - Architecture cleanup. Removed over-emphasis, cross-referenced modules, abstracted all concrete examples.
+v0.2.5 - Complete object type definitions, event implementation clarification.
 
 ## License
 
