@@ -140,19 +140,33 @@ Create workspace at `<current_working_directory>/sciplex/`:
 sciplex/
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/           # ALL files go here
+└── objects/           # ALL files go here (NO other top-level directories!)
     ├── orchestrator/  # Research question, hypotheses, progress
     ├── literature/    # Papers + notes
+    ├── problem/       # Identified research problems
     ├── data/          # Datasets + definitions
     ├── method/        # Methods + implementation code
+    ├── strategy/      # Method evaluation, budget allocation
     ├── experiment/    # Analysis runs + outputs
     ├── figure/        # Visualizations
     ├── finding/       # Conclusions
     ├── failed/        # Failed attempts + lessons
-    └── paper/         # Manuscript
+    ├── paper/         # Manuscript
+    └── console/       # Research trajectory visualization
+        ├── console_data.json
+        └── index.html
 ```
 
-**No top-level directories.** Everything goes under `objects/`.
+**CRITICAL: No top-level directories except `objects/`.**
+
+Do NOT create:
+- `scripts/` at top level (scripts go in `objects/method/` if needed)
+- `data/` at top level (goes in `objects/data/`)
+- `figures/` at top level (goes in `objects/figure/`)
+- `manuscript/` at top level (goes in `objects/paper/`)
+- Any other top-level directory
+
+If analysis scripts are needed, place them in `objects/method/` alongside method definitions.
 
 ### 2. Formulate
 
@@ -241,6 +255,32 @@ Run critical checks:
 - No critical issues (blocks COMPLETE)
 - Method-claim consistency verified
 - Objectives all addressed or acknowledged
+
+### 8. Generate Console
+
+Load `console/console_design.md`.
+
+After each phase transition, update the research console:
+
+```
+Console components (auto-generated from research objects):
+1. Research Timeline — state transitions with timestamps
+2. Question Evolution — question changes and reframings
+3. Hypothesis Tracker — status and evidence for each hypothesis
+4. Experiment Trajectory — method design, execution, results
+5. Evidence Accumulation — evidence strength per hypothesis
+6. Assumption Audit — validated/invalidated assumptions
+7. Claim Graph — position in literature debates
+8. Failure Memory — failures and lessons learned
+9. Objective Progress — completion status
+10. State History — all transitions with guards
+
+Output:
+- objects/console/console_data.json
+- objects/console/index.html (interactive visualization)
+```
+
+**Console provides audit trail for entire research trajectory.**
 
 ---
 

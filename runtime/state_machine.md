@@ -151,6 +151,44 @@ REVIEWING → COMPLETE | WRITING | REFRAMING
     - Critical flaw: REFRAMING (fundamental problem found)
 ```
 
+## Console Update Triggers
+
+After each state transition, update console for transparency:
+
+```
+After FORMULATING:
+  → update question_evolution, hypothesis_tracker
+
+After REVIEWING_LITERATURE:
+  → update claim_graph, assumption_audit
+
+After DESIGNING_METHODS:
+  → update experiment_trajectory (method design)
+
+After RUNNING_EXPERIMENTS:
+  → update experiment_trajectory, evidence_accumulation
+
+After VALIDATING_RESULTS:
+  → update evidence_accumulation, assumption_audit
+  → if failure: update failure_memory
+
+After SYNTHESIZING:
+  → update objective_progress, evidence_accumulation
+
+After REFRAMING:
+  → update question_evolution, state_history
+  → log reframing reason and new direction
+
+After COMPLETE:
+  → generate final console with all components
+  → write objects/console/index.html
+```
+
+Console location: `objects/console/` (NOT top-level directory)
+Console files:
+- `console_data.json` — structured visualization data
+- `index.html` — interactive HTML visualization
+
 ## Transition Guards (Sanity Checks)
 
 **Guard at VALIDATING_RESULTS:**

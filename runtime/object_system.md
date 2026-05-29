@@ -49,44 +49,52 @@ Physical files in same directory:
 
 ## Object Directory
 
+**CRITICAL: Only `objects/` directory at top level. No `scripts/`, `data/`, `figures/`, etc.**
+
 ```
 sciplex/
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/
+└── objects/           # ALL content goes here
     ├── orchestrator/
-    │   └── orch_001.json
+    │   └── orch_XXX.json
     ├── literature/
-    │   ├── lit_001.json
-    │   └── lit_001.pdf
+    │   ├── lit_XXX.json
+    │   └── notes or pdfs if available
     ├── problem/
-    │   └── prob_001.json
+    │   └── prob_XXX.json
     ├── data/
-    │   ├── data_001.json
-    │   └── data_001.csv
+    │   ├── data_XXX.json
+    │   └── data files (.csv, .parquet, etc.)
     ├── method/
-    │   ├── meth_001.json
-    │   └── meth_001.py
+    │   ├── meth_XXX.json
+    │   └ meth_XXX.py (implementation script if needed)
     ├── strategy/
-    │   └── strat_001.json
+    │   └── strat_XXX.json
     ├── experiment/
-    │   └── exp_001/
-    │       ├── exp_001.json
+    │   └── exp_XXX/
+    │       ├── exp_XXX.json
     │       └── outputs/
     ├── figure/
-    │   ├── fig_001.json
-    │   └── fig_001.png
+    │   ├── fig_XXX.json
+    │   └── fig_XXX.png
     ├── finding/
-    │   └── find_001.json
+    │   └── find_XXX.json
     ├── failed/
-    │   └── fail_001.json
+    │   └── fail_XXX.json
     ├── paper/
-    │   ├── paper_001.json
-    │   └── paper_001.md
+    │   ├── paper_XXX.json
+    │   └── paper_XXX.md
     └── console/
-        ├── console_data.json
-        └── index.html
+        ├── console_data.json  # visualization data
+        └── index.html         # interactive console
 ```
+
+**Common violations to avoid:**
+- Creating `scripts/` at sciplex root → scripts go in `objects/method/`
+- Creating `data/` at sciplex root → goes in `objects/data/`
+- Creating `figures/` at sciplex root → goes in `objects/figure/`
+- Creating `manuscript/` at sciplex root → goes in `objects/paper/`
 
 ## State Index
 

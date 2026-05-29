@@ -250,25 +250,20 @@ Color coding:
 Visual: Interactive timeline with all state transitions
 
 ```
-Time: 2024-01-15T09:00:00
-State: FORMULATING → REVIEWING_LITERATURE
-Reason: Question defined, hypotheses generated
-Guard: PASSED
+Time: ISO-8601 timestamp
+State: PREVIOUS_STATE → NEXT_STATE
+Reason: Transition trigger description
+Guard: PASSED | BLOCKED (reason)
 
-Time: 2024-01-15T10:00:00  
-State: RUNNING_EXPERIMENTS → VALIDATING_RESULTS
-Reason: All experiments executed
-Guard: PASSED
-
-Time: 2024-01-15T11:00:00
+Time: ISO-8601 timestamp
 State: VALIDATING_RESULTS → REFRAMING
-Reason: Physical sanity check FAILED
-Guard: BLOCKED (water availability > precipitation)
+Reason: Sanity check FAILED
+Guard: BLOCKED (check description)
 
-Time: 2024-01-15T11:30:00
-State: REFRAMING → DESIGNING_METHODS  
+Time: ISO-8601 timestamp
+State: REFRAMING → DESIGNING_METHODS
 Reason: New direction defined
-New Direction: Use precipitation as availability proxy
+New Direction: Revised approach description
 ```
 
 Interactive:
@@ -304,12 +299,12 @@ def update_console():
 
 ```json
 {
-  "id": "console_001",
+  "id": "console_XXX",
   "type": "console",
   "state": "active",
   "attributes": {
-    "generated_at": "2024-01-15T12:00:00",
-    "current_phase": "VALIDATING_RESULTS",
+    "generated_at": "ISO-8601 timestamp",
+    "current_phase": "CURRENT_PHASE",
     "file_path": "objects/console/index.html",
     "data_path": "objects/console/console_data.json",
     "components": [
