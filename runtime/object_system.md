@@ -14,7 +14,9 @@ Every meaningful research artifact is an object with:
 
 | Type | Purpose | States |
 |------|---------|--------|
-| orchestrator | Research question, hypotheses, progress | formulating, designing, executing, synthesizing, writing, complete |
+| orchestrator | Research question, progress | formulating, designing, executing, synthesizing, writing, complete |
+| hypothesis | Testable predictions | formulated, tested, supported, refuted, inconclusive |
+| problem | Identified research problems | identified, resolved |
 | literature | Papers, notes, claim positions | identified, read, cited |
 | problem | Identified research problems | identified, resolved |
 | data | Datasets | identified, validated, processed |
@@ -54,21 +56,22 @@ sciplex/
 ├── state.json         # Object index
 ├── events.json        # Event log
 └── objects/           # All content here
-    ├── orchestrator/
-    ├── literature/
-    ├── problem/
-    ├── data/
+    ├── orchestrator/  # Research question, progress tracking
+    ├── hypothesis/    # Hypotheses (can also be in orchestrator/)
+    ├── problem/       # Identified problems
+    ├── literature/    # Papers, notes
+    ├── data/          # Datasets
     ├── method/        # Methods + analysis scripts
-    ├── strategy/
-    ├── experiment/
-    ├── figure/
-    ├── finding/
-    ├── failed/
-    ├── paper/
-    └── console/
+    ├── strategy/      # Method evaluation
+    ├── experiment/    # Analysis outputs
+    ├── figure/        # Visualizations
+    ├── finding/       # Conclusions
+    ├── failed/        # Failures + lessons
+    ├── paper/         # Manuscript
+    └── console/       # Trajectory visualization
 ```
 
-All files go in `objects/`. Analysis scripts belong in `objects/method/`.
+Hypotheses can be stored in `orchestrator/` or `hypothesis/`. All other types have dedicated directories.
 
 ## State Index
 

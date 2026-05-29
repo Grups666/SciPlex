@@ -112,7 +112,7 @@ orchestrator: formulating → executing
 
 Events support meta-reasoning:
 
-**"Why did I iterate on this method 3 times?"**
+**"Why did I iterate on this method?"**
 → Check events for method, find iteration reasons
 
 **"What led to this finding?"**
@@ -120,3 +120,7 @@ Events support meta-reasoning:
 
 **"Where did I waste time?"**
 → Find events with long gaps, analyze what happened
+
+## Implementation
+
+Events are written to `events.json` on every state transition. Empty events file indicates execution did not follow state machine protocol.
