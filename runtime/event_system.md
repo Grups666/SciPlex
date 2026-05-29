@@ -14,16 +14,15 @@ Events enable:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00",
-  "action": "create|update|validate|fail|iterate",
-  "object_id": "meth_001",
-  "object_type": "method",
-  "state_before": "designed",
-  "state_after": "implemented",
-  "reason": "Implementation complete, ready for validation",
+  "timestamp": "ISO-8601",
+  "action": "create|update|validate|fail|iterate|transition",
+  "object_id": "obj_XXX",
+  "object_type": "method|experiment|finding|...",
+  "state_before": "previous_state",
+  "state_after": "new_state",
+  "reason": "Why this action occurred",
   "details": {
-    "implementation_file": "meth_001.py",
-    "lines_of_code": 45
+    "relevant_attributes": "key information"
   }
 }
 ```
@@ -47,27 +46,27 @@ Events enable:
 {
   "events": [
     {
-      "timestamp": "2024-01-15T09:00:00",
+      "timestamp": "ISO-8601",
       "action": "create",
-      "object_id": "orch_001",
+      "object_id": "orch_XXX",
       "object_type": "orchestrator",
       "state_after": "formulating",
       "reason": "Research initiated"
     },
     {
-      "timestamp": "2024-01-15T09:15:00",
+      "timestamp": "ISO-8601",
       "action": "create",
-      "object_id": "hyp_001",
+      "object_id": "hyp_XXX",
       "object_type": "hypothesis",
-      "reason": "First hypothesis generated"
+      "reason": "Hypothesis generated"
     },
     {
-      "timestamp": "2024-01-15T10:30:00",
+      "timestamp": "ISO-8601",
       "action": "transition",
-      "object_id": "orch_001",
+      "object_id": "orch_XXX",
       "state_before": "formulating",
       "state_after": "designing",
-      "reason": "Hypotheses complete, proceeding to method design"
+      "reason": "Phase complete, proceeding to next"
     }
   ]
 }
@@ -101,27 +100,7 @@ events ordered by timestamp
 
 ## State Transitions
 
-Valid transitions are enforced:
-
-```
-orchestrator:
-  formulating → designing (hypotheses complete)
-  designing → executing (methods designed)
-  executing → synthesizing (experiments complete)
-  synthesizing → writing (findings validated)
-  writing → complete (manuscript done)
-
-method:
-  designed → implemented (code written)
-  implemented → validated (tests pass)
-
-experiment:
-  running → completed (success)
-  running → failed (error)
-
-figure:
-  draft → finalized (validated)
-```
+Valid transitions are enforced by state machine. See `runtime/state_machine.md` for full specification.
 
 Invalid transition example:
 ```

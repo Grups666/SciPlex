@@ -140,33 +140,22 @@ Create workspace at `<current_working_directory>/sciplex/`:
 sciplex/
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/           # ALL files go here (NO other top-level directories!)
-    ├── orchestrator/  # Research question, hypotheses, progress
+└── objects/           # All research content
+    ├── orchestrator/  # Question, hypotheses, progress
     ├── literature/    # Papers + notes
-    ├── problem/       # Identified research problems
-    ├── data/          # Datasets + definitions
-    ├── method/        # Methods + implementation code
-    ├── strategy/      # Method evaluation, budget allocation
-    ├── experiment/    # Analysis runs + outputs
+    ├── problem/       # Identified problems
+    ├── data/          # Datasets
+    ├── method/        # Methods + code
+    ├── strategy/      # Method evaluation
+    ├── experiment/    # Analysis outputs
     ├── figure/        # Visualizations
     ├── finding/       # Conclusions
-    ├── failed/        # Failed attempts + lessons
+    ├── failed/        # Failures + lessons
     ├── paper/         # Manuscript
-    └── console/       # Research trajectory visualization
-        ├── console_data.json
-        └── index.html
+    └── console/       # Trajectory visualization
 ```
 
-**CRITICAL: No top-level directories except `objects/`.**
-
-Do NOT create:
-- `scripts/` at top level (scripts go in `objects/method/` if needed)
-- `data/` at top level (goes in `objects/data/`)
-- `figures/` at top level (goes in `objects/figure/`)
-- `manuscript/` at top level (goes in `objects/paper/`)
-- Any other top-level directory
-
-If analysis scripts are needed, place them in `objects/method/` alongside method definitions.
+All content goes in `objects/`. See `runtime/object_system.md` for structure.
 
 ### 2. Formulate
 

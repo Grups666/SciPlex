@@ -49,52 +49,26 @@ Physical files in same directory:
 
 ## Object Directory
 
-**CRITICAL: Only `objects/` directory at top level. No `scripts/`, `data/`, `figures/`, etc.**
-
 ```
 sciplex/
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/           # ALL content goes here
+└── objects/           # All content here
     ├── orchestrator/
-    │   └── orch_XXX.json
     ├── literature/
-    │   ├── lit_XXX.json
-    │   └── notes or pdfs if available
     ├── problem/
-    │   └── prob_XXX.json
     ├── data/
-    │   ├── data_XXX.json
-    │   └── data files (.csv, .parquet, etc.)
-    ├── method/
-    │   ├── meth_XXX.json
-    │   └ meth_XXX.py (implementation script if needed)
+    ├── method/        # Methods + analysis scripts
     ├── strategy/
-    │   └── strat_XXX.json
     ├── experiment/
-    │   └── exp_XXX/
-    │       ├── exp_XXX.json
-    │       └── outputs/
     ├── figure/
-    │   ├── fig_XXX.json
-    │   └── fig_XXX.png
     ├── finding/
-    │   └── find_XXX.json
     ├── failed/
-    │   └── fail_XXX.json
     ├── paper/
-    │   ├── paper_XXX.json
-    │   └── paper_XXX.md
     └── console/
-        ├── console_data.json  # visualization data
-        └── index.html         # interactive console
 ```
 
-**Common violations to avoid:**
-- Creating `scripts/` at sciplex root → scripts go in `objects/method/`
-- Creating `data/` at sciplex root → goes in `objects/data/`
-- Creating `figures/` at sciplex root → goes in `objects/figure/`
-- Creating `manuscript/` at sciplex root → goes in `objects/paper/`
+All files go in `objects/`. Analysis scripts belong in `objects/method/`.
 
 ## State Index
 

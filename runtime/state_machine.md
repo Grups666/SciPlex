@@ -151,43 +151,24 @@ REVIEWING → COMPLETE | WRITING | REFRAMING
     - Critical flaw: REFRAMING (fundamental problem found)
 ```
 
-## Console Update Triggers
+## Output Generation
 
-After each state transition, update console for transparency:
+Each state transition produces:
 
 ```
-After FORMULATING:
-  → update question_evolution, hypothesis_tracker
+1. Event log entry (events.json)
+   - timestamp, action, object_id, state_before, state_after, reason
 
-After REVIEWING_LITERATURE:
-  → update claim_graph, assumption_audit
+2. Console update (objects/console/)
+   - Auto-generated from research objects
+   - 10 components: timeline, hypotheses, experiments, evidence, assumptions, claims, failures, objectives, history
+   - Location: objects/console/ (follows object system structure)
 
-After DESIGNING_METHODS:
-  → update experiment_trajectory (method design)
-
-After RUNNING_EXPERIMENTS:
-  → update experiment_trajectory, evidence_accumulation
-
-After VALIDATING_RESULTS:
-  → update evidence_accumulation, assumption_audit
-  → if failure: update failure_memory
-
-After SYNTHESIZING:
-  → update objective_progress, evidence_accumulation
-
-After REFRAMING:
-  → update question_evolution, state_history
-  → log reframing reason and new direction
-
-After COMPLETE:
-  → generate final console with all components
-  → write objects/console/index.html
+3. State update (state.json)
+   - Current phase, object counts, last_updated
 ```
 
-Console location: `objects/console/` (NOT top-level directory)
-Console files:
-- `console_data.json` — structured visualization data
-- `index.html` — interactive HTML visualization
+Console generation is automatic, not optional. It provides the audit trail for research transparency.
 
 ## Transition Guards (Sanity Checks)
 
