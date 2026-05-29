@@ -14,23 +14,30 @@ Steps:
      - What's debated?
      - What's unknown?
   
-  2. Identify specific question
-     - Narrow enough to answer
-     - Broad enough to matter
+  2. Identify problems (NOT just gaps)
+     - Load strategy/problem_discovery.md
+     - Find contradictions: Paper A says X, Paper B says ¬X
+     - Find tensions: Same result, different conditions (scale, time, method)
+     - Find inconsistencies: Same method, different results
+     - Gaps are weakest—only pursue if clearly important
   
-  3. Generate competing hypotheses
+  3. Select problem
+     - Evaluate: Is it real? Important? Tractable?
+     - Generate question that would resolve it
+  
+  4. Generate competing hypotheses
      - 2-3 hypotheses that make different predictions
      - Each must be falsifiable
   
-  4. Specify evidence patterns
+  5. Specify evidence patterns
      - What would support H1?
      - What would refute H1?
      - What would support H2?
   
-  5. Position in Claim Graph
+  6. Position in Claim Graph
      - Map hypotheses onto existing debates
      - Identify what's novel
-Output: {question, hypotheses[], evidence_patterns[], claim_position}
+Output: {question, hypotheses[], evidence_patterns[], claim_position, problem}
 ```
 
 ## Literature Integration
@@ -45,10 +52,32 @@ For each paper:
 Stop when:
 - Can articulate main approaches in field
 - Understand current debates
-- Can identify clear gaps
+- Can identify problems (contradictions, tensions)
 - Can position your question
 
 Typically: 10-30 papers depending on field maturity.
+
+## Problem Discovery (Critical)
+
+**Load `strategy/problem_discovery.md` for full specification.**
+
+Problem types (in order of value):
+1. **Tension** (most valuable): Paper A says X under C1, Paper B says X under C2, conditions conflict
+2. **Contradiction**: Paper A says X, Paper B says ¬X (someone must be wrong)
+3. **Inconsistency**: Same method gives different results
+4. **Unexplained**: Established pattern without mechanism
+5. **Gap** (weakest): Nobody studied X (may not matter)
+
+Key insight: Gap ≠ contribution. Contradiction resolution = contribution.
+
+Example tension:
+```
+Paper A: "TWS decline driven by extraction" (basin scale)
+Paper B: "TWS decline driven by climate" (point scale)
+
+Problem: Both could be right at different scales
+Question: "What is the scale-dependent contribution?"
+```
 
 ## Hypothesis Quality
 
@@ -73,6 +102,13 @@ Create orchestrator object:
   "state": "formulating",
   "attributes": {
     "question": "Specific research question",
+    "problem": {
+      "id": "prob_001",
+      "type": "tension",
+      "description": "Paper A finds X at scale S1; Paper B finds Y at scale S2",
+      "source_papers": ["lit_001", "lit_003"],
+      "resolving_question": "What mediates the difference?"
+    },
     "hypotheses": [
       {
         "id": "hyp_001",
@@ -96,6 +132,7 @@ Create orchestrator object:
 Before proceeding to Method Design:
 
 - [ ] Question is specific and answerable
+- [ ] Problem identified (contradiction/tension preferred over gap)
 - [ ] 2+ hypotheses that make different predictions
 - [ ] Each hypothesis is falsifiable
 - [ ] Evidence patterns specified for each hypothesis

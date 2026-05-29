@@ -2,106 +2,195 @@
 
 ## Core Concept
 
-The research process is a state machine. Explicit states prevent drift and enable recovery.
+Research is NOT a linear pipeline. It's a **graph with cycles**.
+
+Real research:
+```
+Question → try method → realize question wrong → reframe → new question → ...
+```
+
+This state machine supports:
+1. Linear progression (when things work)
+2. Backward jumps (when发现问题)
+3. Problem reframing (when question itself is wrong)
+
+## State Graph
+
+```
+                    ┌─────────────────────────────────────┐
+                    │                                     │
+                    ▼                                     │
+IDLE → FORMULATING → REVIEWING_LITERATURE → DESIGNING_METHODS
+         │                    │                    │
+         │                    │                    │
+         │         ┌──────────┴──────────┐         │
+         │         │                     │         │
+         │         ▼                     ▼         │
+         │    REFRAMING ←────────── REFRAMING     │
+         │         │                     │         │
+         │         └─────────────────────┘         │
+         │                                     │
+         ▼                                     ▼
+      PREPARING_DATA → RUNNING_EXPERIMENTS → VALIDATING_RESULTS
+                              │                    │
+                              │                    │
+                              ▼                    ▼
+                           ITERATING ←─────── ITERATING
+                              │
+                              ▼
+                         REFRAMING (if fundamental issue)
+                              │
+                              └─────────────→ 回到任意状态
+
+VALIDATING_RESULTS → SYNTHESIZING → WRITING → REVIEWING → COMPLETE
+```
 
 ## States
 
+| State | Purpose | Can Jump Back To |
+|-------|---------|------------------|
+| IDLE | Waiting for input | - |
+| FORMULATING | Define question, hypotheses | - |
+| REVIEWING_LITERATURE | Survey field, build Claim Graph | FORMULATING |
+| DESIGNING_METHODS | Plan analysis, evaluate strategy | FORMULATING, REVIEWING_LITERATURE |
+| PREPARING_DATA | Load, validate data | - |
+| RUNNING_EXPERIMENTS | Execute methods | DESIGNING_METHODS |
+| VALIDATING_RESULTS | Check outputs, sanity check | DESIGNING_METHODS, PREPARING_DATA |
+| ITERATING | Refine approach | DESIGNING_METHODS |
+| REFRAMING | **Reconstruct the problem itself** | ANY state (restart) |
+| SYNTHESIZING | Extract findings | RUNNING_EXPERIMENTS |
+| WRITING | Produce manuscript | SYNTHESIZING |
+| REVIEWING | Quality check | ANY state (if critical flaw) |
+| COMPLETE | Done | - |
+
+## REFRAMING State (Critical Addition)
+
+**When to enter REFRAMING:**
+- Question assumptions prove invalid
+- Multiple iterations fail for same hypothesis
+- Evidence contradicts question premise
+- Realize "we're solving the wrong problem"
+
+**What happens in REFRAMING:**
 ```
-IDLE
-  ↓ (user provides goal)
-FORMULATING
-  ↓ (question, hypotheses defined)
-REVIEWING_LITERATURE
-  ↓ (gap identified, position clear)
-DESIGNING_METHODS
-  ↓ (methods, data sources defined)
-PREPARING_DATA
-  ↓ (data validated, preprocessed)
-RUNNING_EXPERIMENTS
-  ↓ (hypotheses tested)
-VALIDATING_RESULTS
-  ↓ (figures inspected, evidence assessed)
-ITERATING
-  ↓ (refinement if needed, or proceed)
-SYNTHESIZING
-  ↓ (findings extracted, chains built)
-WRITING
-  ↓ (manuscript drafted)
-REVIEWING
-  ↓ (self-review passed)
-COMPLETE
+1. Audit: What assumptions failed?
+2. Reconstruct: What's the real problem?
+3. Decide: 
+   - New question? → back to FORMULATING
+   - New approach? → back to DESIGNING_METHODS
+   - Different scale? → back to REVIEWING_LITERATURE
 ```
 
-## State Definitions
+**Reframing triggers:**
+```
+- 3+ failures for same hypothesis
+- Physical calculation yields absurd values (sanity check fail)
+- Method implementation fundamentally different from design
+- Question's premise contradicted by data
+```
 
-| State | Purpose | Exit Condition |
-|-------|---------|----------------|
-| IDLE | Waiting for input | User provides goal |
-| FORMULATING | Define question, hypotheses | Question specific, 2+ hypotheses |
-| REVIEWING_LITERATURE | Survey field, position work | Gap identified, Claim Graph built |
-| DESIGNING_METHODS | Plan analysis | Methods match hypotheses |
-| PREPARING_DATA | Load, validate, preprocess | Data ready for analysis |
-| RUNNING_EXPERIMENTS | Execute methods | All hypotheses tested |
-| VALIDATING_RESULTS | Check outputs | Figures inspected, evidence assessed |
-| ITERATING | Refine if needed | Convergence or iteration limit |
-| SYNTHESIZING | Extract findings | Evidence chains complete |
-| WRITING | Produce manuscript | Draft complete |
-| REVIEWING | Quality check | Self-review passed |
-| COMPLETE | Done | Manuscript finalized |
+## State Transitions with Guards
 
-## State Transitions
-
-Each transition has conditions:
+Each transition now has a **guard** (sanity check):
 
 ```
 FORMULATING → REVIEWING_LITERATURE
-  Condition: question defined, hypotheses generated
+  Guard: question defined, hypotheses falsifiable
   Action: Begin literature survey
 
 REVIEWING_LITERATURE → DESIGNING_METHODS
-  Condition: gap identified, position in Claim Graph
+  Guard: gap identified, Claim Graph built, contradictions noted
   Action: Begin method design
+  Can also: → REFRAMING (if gap is false)
 
 DESIGNING_METHODS → PREPARING_DATA
-  Condition: methods defined, data sources identified
+  Guard: methods defined, strategy evaluated, assumptions listed
   Action: Begin data preparation
+  Can also: → REFRAMING (if methods can't address question)
 
 PREPARING_DATA → RUNNING_EXPERIMENTS
-  Condition: data validated, preprocessed
+  Guard: data validated, physical units correct
   Action: Begin experiment execution
 
 RUNNING_EXPERIMENTS → VALIDATING_RESULTS
-  Condition: all hypotheses tested
+  Guard: all planned experiments executed
   Action: Begin result validation
+  Can also: → ITERATING (if partial results need refinement)
 
-VALIDATING_RESULTS → ITERATING | SYNTHESIZING
-  Condition: results assessed
+VALIDATING_RESULTS → SYNTHESIZING | ITERATING | REFRAMING
+  Guard: sanity checks pass
+  Decision tree:
+    - Results reasonable? → SYNTHESIZING
+    - Results need refinement? → ITERATING
+    - Results absurd? → REFRAMING
+    - Method != design? → REFRAMING
+
+ITERATING → RUNNING_EXPERIMENTS | REFRAMING
+  Guard: refinement plan defined
   Decision:
-    - If ambiguous AND iterations < max: ITERATING
-    - If clear OR iterations = max: SYNTHESIZING
+    - If iteration < max: RUNNING_EXPERIMENTS
+    - If iterations exhausted: REFRAMING or acknowledge limitation
 
-ITERATING → RUNNING_EXPERIMENTS
-  Condition: refinement identified
-  Action: Execute refined approach
+REFRAMING → ANY STATE
+  Guard: new direction defined, reason documented
+  Action: Jump to appropriate state with new context
 
 SYNTHESIZING → WRITING
-  Condition: findings extracted, evidence chains complete
+  Guard: evidence chains complete, findings calibrated
   Action: Begin manuscript
 
 WRITING → REVIEWING
-  Condition: draft complete
+  Guard: draft complete
   Action: Begin self-review
 
-REVIEWING → COMPLETE | WRITING
-  Condition: review complete
+REVIEWING → COMPLETE | WRITING | REFRAMING
+  Guard: review complete
   Decision:
-    - If issues found: WRITING (revise)
-    - If passed: COMPLETE
+    - Minor issues: WRITING (revise)
+    - Passed: COMPLETE
+    - Critical flaw: REFRAMING (fundamental problem found)
+```
+
+## Transition Guards (Sanity Checks)
+
+**Guard at VALIDATING_RESULTS:**
+```
+sanity_check():
+  1. Method fidelity check
+     - Implemented method == designed method?
+     - If not: log failure, block SYNTHESIZING
+
+  2. Physical sanity check
+     - Values in reasonable range?
+     - Example: water availability > precipitation? → ERROR
+     - Example: TWS trend +6mm/year globally? → QUESTION
+
+  3. Objective completion check
+     - All stated objectives addressed?
+     - If missing: block SYNTHESIZING, force ITERATING
+
+  4. Assumption audit
+     - Critical assumptions still valid?
+     - If invalidated: block, force REFRAMING
+```
+
+**Guard at REVIEWING:**
+```
+critical_review():
+  1. What would invalidate this entire paper?
+     - List critical assumptions
+     - Check each: validated? acknowledged?
+
+  2. Method-claim consistency
+     - Manuscript claims match actual method?
+     - If mismatch: scientific dishonesty flag
+
+  3. Objective completion
+     - All 4 objectives from original goal addressed?
+     - If missing: incomplete, cannot COMPLETE
 ```
 
 ## State Object
-
-Track current state in orchestrator:
 
 ```json
 {
@@ -110,73 +199,81 @@ Track current state in orchestrator:
   "state": "running_experiments",
   "attributes": {
     "current_phase": "RUNNING_EXPERIMENTS",
-    "phase_history": [
-      {"phase": "FORMULATING", "entered": "2024-01-15T09:00:00", "exited": "2024-01-15T09:30:00"},
-      {"phase": "REVIEWING_LITERATURE", "entered": "2024-01-15T09:30:00", "exited": "2024-01-15T10:00:00"},
-      {"phase": "DESIGNING_METHODS", "entered": "2024-01-15T10:00:00", "exited": "2024-01-15T10:30:00"},
-      {"phase": "PREPARING_DATA", "entered": "2024-01-15T10:30:00", "exited": "2024-01-15T11:00:00"},
-      {"phase": "RUNNING_EXPERIMENTS", "entered": "2024-01-15T11:00:00"}
+    "phase_history": [...],
+    "reframing_history": [
+      {
+        "trigger": "Physical calculation absurd",
+        "from_phase": "VALIDATING_RESULTS",
+        "reason": "Discharge ≠ local availability",
+        "new_direction": "Use precipitation instead",
+        "timestamp": "2024-01-15T12:00:00"
+      }
     ],
     "iterations": 0,
-    "max_iterations": 3
+    "max_iterations": 3,
+    "reframing_count": 0,
+    "max_reframing": 2
   }
 }
 ```
 
-## Recovery
+## Research Strategy (Design Phase)
 
-If session interrupted:
-
-1. Read orchestrator state
-2. Identify current phase
-3. Check what's complete
-4. Resume from current phase
-
-Example:
-```
-Session resumes. Orchestrator state: RUNNING_EXPERIMENTS
-Check: Which experiments complete? exp_001, exp_002
-Check: Which hypotheses tested? hyp_001 (supported), hyp_002 (inconclusive)
-Decision: Run additional experiment for hyp_002, then validate
-```
-
-## Error Handling
-
-If error in state:
+When in DESIGNING_METHODS, evaluate strategy:
 
 ```
-RUNNING_EXPERIMENTS → error
-  → Log failure event
-  → Check failure memory
-  → Identify alternative
-  → Transition to ITERATING (refine method)
-  → Back to RUNNING_EXPERIMENTS
+For each hypothesis, list possible methods:
+
+Method A:
+  - cost: low (simple computation)
+  - information_gain: medium (answers part of question)
+  - risk: low (well-established)
+
+Method B:
+  - cost: high (complex computation)
+  - information_gain: high (answers full question)
+  - risk: medium (requires assumptions)
+
+Strategy:
+  1. Try Method A first (low cost probe)
+  2. If inconclusive, escalate to Method B
+  3. Document strategy in method object
+```
+
+## Recovery After Reframing
+
+Reframing doesn't restart everything:
+- Literature already reviewed → keep Claim Graph
+- Data already loaded → keep validated data
+- Only: reconstruct question and methods
+
+```
+REFRAMING → FORMULATING
+  Keep: literature objects, data objects (validated)
+  Discard: hypothesis objects, method objects
+  Generate: new hypotheses for reframed question
 ```
 
 ## Progress Reporting
 
-At any time, can report:
-
 ```
 Research Progress:
-  Phase: RUNNING_EXPERIMENTS (5 of 11 phases)
+  Phase: RUNNING_EXPERIMENTS
   
-  Complete:
-    - Question formulated
-    - 3 hypotheses generated
-    - 5 literature sources reviewed
-    - 2 methods designed
-    - 2 data sources validated
+  Reframings: 1/2
+    - Reason: "Discharge ≠ local water availability"
+    - New direction: "Use precipitation as availability proxy"
   
-  In Progress:
-    - Experiment exp_003 running
+  Iterations: 2/3
   
-  Pending:
-    - Result validation
-    - Synthesis
-    - Writing
-    - Review
+  Objectives:
+    ✓ Objective 1: Hotspots delineated
+    ✓ Objective 2: Anomalies evaluated
+    ⏳ Objective 3: Classification (in progress)
+    ✗ Objective 4: Regional analysis (pending)
   
-  Iterations: 0/3
-  Experiments: 2/10
+  Critical Assumptions:
+    ✓ WaterGAP units understood
+    ✓ Baseline period appropriate
+    ⚠ Discharge as availability (INVALIDATED → reframed)
 ```

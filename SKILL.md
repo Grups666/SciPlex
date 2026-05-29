@@ -33,15 +33,21 @@ This skill is a layered cognitive stack:
 ```
 Layer 1 — Scientific Philosophy (core/)
   How to think: epistemology, evidence, identity
-  
+
 Layer 2 — Research Workflow (workflow/)
   How to work: formulation → execution → writing
-  
-Layer 3 — Runtime Infrastructure (runtime/)
+
+Layer 3 — Strategy & Discovery (strategy/)
+  What to try: method selection, problem discovery, resource allocation
+
+Layer 4 — Runtime Infrastructure (runtime/)
   How to execute: objects, events, state machine
-  
-Layer 4 — Quality Assurance (reviewer/)
+
+Layer 5 — Quality Assurance (reviewer/)
   How to validate: critique, overclaim detection, causal validity
+
+Layer 6 — Transparency (console/)
+  How to see: visualization, trajectory audit
 ```
 
 Load modules on demand. Don't load everything at once.
@@ -50,13 +56,27 @@ Load modules on demand. Don't load everything at once.
 
 ## Research State Machine
 
-Research is a state machine. Current phase determines valid actions.
+Research is a **graph with cycles**, not a linear pipeline.
 
 ```
 IDLE → FORMULATING → REVIEWING_LITERATURE → DESIGNING_METHODS
-  → PREPARING_DATA → RUNNING_EXPERIMENTS → VALIDATING_RESULTS
-  → ITERATING | SYNTHESIZING → WRITING → REVIEWING → COMPLETE
+         ↓                    ↓                    ↓
+      REFRAMING ←──────────────────────────────────┘
+         ↓
+      (can return to ANY state)
+      
+DESIGNING_METHODS → PREPARING_DATA → RUNNING_EXPERIMENTS → VALIDATING_RESULTS
+                                              ↓                    ↓
+                                           ITERATING ←────────────┘
+                                              ↓
+                                          REFRAMING (if fundamental issue)
+
+VALIDATING_RESULTS → SYNTHESIZING → WRITING → REVIEWING → COMPLETE
 ```
+
+**REFRAMING state:** When question assumptions fail, method fundamentally mismatched design, or physical values absurd.
+
+**Transition guards:** Sanity checks at each transition prevent proceeding with invalid results.
 
 **See:** `runtime/state_machine.md` for full specification.
 
@@ -75,14 +95,12 @@ IDLE → FORMULATING → REVIEWING_LITERATURE → DESIGNING_METHODS
 | Synthesis | `workflow/synthesis.md` | Findings, evidence chains |
 | Writing | `workflow/writing.md` | Manuscript |
 
-### Quality Modules
+### Strategy & Discovery Modules
 
 | Purpose | Module |
 |---------|--------|
-| Evidence standards | `core/evidence.md` |
-| Causal validity | `reviewer/causal_validity.md` |
-| Overclaim detection | `reviewer/overclaim.md` |
-| Critical review | `reviewer/critique.md` |
+| Method selection | `strategy/strategy.md` |
+| Problem discovery | `strategy/problem_discovery.md` |
 
 ### Runtime Modules
 
@@ -92,6 +110,21 @@ IDLE → FORMULATING → REVIEWING_LITERATURE → DESIGNING_METHODS
 | Event system | `runtime/event_system.md` |
 | State machine | `runtime/state_machine.md` |
 | Failure memory | `runtime/failure_memory.md` |
+
+### Quality Modules
+
+| Purpose | Module |
+|---------|--------|
+| Evidence standards | `core/evidence.md` |
+| Causal validity | `reviewer/causal_validity.md` |
+| Overclaim detection | `reviewer/overclaim.md` |
+| Critical review | `reviewer/critique.md` |
+
+### Transparency Modules
+
+| Purpose | Module |
+|---------|--------|
+| Research console | `console/console_design.md` |
 
 ---
 
@@ -123,36 +156,54 @@ sciplex/
 
 ### 2. Formulate
 
-Load `workflow/formulation.md` and `core/epistemology.md`.
+Load `workflow/formulation.md`, `core/epistemology.md`, and `strategy/problem_discovery.md`.
 
 Generate:
 - Question object (orchestrator)
 - Hypothesis objects
 - Literature objects (from search)
+- Problem objects (from contradiction/tension finding)
 
-**Quality Gate:** Question specific? Hypotheses falsifiable? Gap identified?
+**Quality Gate:** Question specific? Hypotheses falsifiable? Problem identified (not just gap)?
 
 ### 3. Design
 
-Load `workflow/methods.md`.
+Load `workflow/methods.md` and `strategy/strategy.md`.
 
 Generate:
 - Method objects
 - Data objects
+- Strategy objects (method evaluation, budget allocation)
 
-**Quality Gate:** Methods match hypotheses? Data documented? Confounders identified?
+**Quality Gate:** Methods match hypotheses? Data documented? Strategy evaluated? Confounders identified?
 
 ### 4. Execute
 
 Load `workflow/execution.md`, `runtime/failure_memory.md`.
+
+**Pre-execution checks:**
+- Load method object, extract design intent
+- Query failure memory for similar approaches
+- Create implementation checklist
+
+**Execution checkpoints:**
+- Unit understanding (check before calculation)
+- Method fidelity (implementation == design?)
+- Physical sanity (values reasonable?)
 
 Use `scripts/execute_analysis.py` for reproducible runs.
 
 Generate:
 - Experiment objects
 - Figure objects
+- Failure objects (with lessons)
 
-**Quality Gate:** All hypotheses tested? Figures validated? Failures recorded?
+**Quality Gate:**
+- All hypotheses tested
+- Method fidelity check passed
+- Physical sanity check passed
+- Objectives progress checked
+- Failures recorded with lessons
 
 ### 5. Synthesize
 
@@ -178,12 +229,18 @@ Generate:
 
 Load `reviewer/` modules.
 
-Run:
+Run critical checks:
+- **Method fidelity:** implementation == design?
+- **Physical sanity:** values reasonable?
+- **Objective completion:** all objectives addressed?
+- **Critical assumptions:** what would invalidate everything?
 - Overclaim detection
 - Causal validity check
-- Critical review
 
-**Quality Gate:** No critical issues? No major overclaims? All causal claims valid?
+**Quality Gate:**
+- No critical issues (blocks COMPLETE)
+- Method-claim consistency verified
+- Objectives all addressed or acknowledged
 
 ---
 

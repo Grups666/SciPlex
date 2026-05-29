@@ -2,11 +2,97 @@
 
 ## Purpose
 
-Systematic critique of research quality. Identify weaknesses before they become problems.
+Systematic critique of research quality. Identify weaknesses **before they become fatal flaws**.
+
+## Review Philosophy
+
+Not just "what are the limitations?" but:
+- "What would make this entire paper invalid?"
+- "What assumptions are we depending on?"
+- "Did we actually do what we claimed?"
 
 ## Review Dimensions
 
-### 1. Claim Validity
+### 1. Method Fidelity (NEW - Critical)
+
+**Question:** Did we implement what we designed?
+
+Check:
+```
+For each method object:
+  - Design: "Use Getis-Ord Gi* spatial statistics"
+  - Implementation: Check actual code
+  - Match? YES/NO
+
+Red flags:
+- Designed: Gi* → Implemented: threshold (降级)
+- Designed: k-means → Implemented: manual classification (降级)
+- Manuscript claims "statistically significant" but code uses ad-hoc threshold
+```
+
+**Severity: CRITICAL if mismatch**
+
+This is scientific dishonesty, not just limitation.
+
+### 2. Physical Sanity (NEW - Critical)
+
+**Question:** Do the numbers make physical sense?
+
+Domain-specific checks:
+
+**For hydrology:**
+```
+- Water availability > Precipitation? → ERROR
+- Groundwater depletion > Recharge + Extraction? → ERROR
+- TWS trend globally positive while climate change suggests negative? → QUESTION
+- Values 10x off from literature? → ERROR
+```
+
+**For general analysis:**
+```
+- Values within known physical bounds?
+- Orders of magnitude reasonable?
+- Trends match established patterns (or have explanation)?
+```
+
+**What to do if fails:**
+- Block SYNTHESIZING
+- Log as failure with lesson
+- Force ITERATING or REFRAMING
+
+### 3. Critical Assumption Audit (NEW - Critical)
+
+**Question:** What assumptions would invalidate everything?
+
+For each finding, list assumptions:
+```json
+{
+  "id": "find_001",
+  "attributes": {
+    "statement": "X causes Y",
+    "critical_assumptions": [
+      {
+        "assumption": "Discharge represents local water availability",
+        "validated": false,
+        "validation_method": "Compare with precipitation",
+        "if_invalid": "Entire finding collapses"
+      },
+      {
+        "assumption": "No major confounders beyond those controlled",
+        "validated": true,
+        "validation_method": "Literature review"
+      }
+    ]
+  }
+}
+```
+
+**Audit questions:**
+- What does this finding depend on?
+- If assumption X fails, what survives?
+- Has each critical assumption been validated or acknowledged?
+
+### 4. Claim Validity
 
 **Question:** Are claims calibrated to evidence?
 
@@ -17,11 +103,11 @@ Check:
 - No evidence → any claim ✗ (fabrication)
 
 Red flags:
-- "We prove..." without strong evidence
+- "We demonstrate..." without strong evidence
 - "X causes Y" without mechanism
-- Broad generalizations from narrow data
+- "Statistically significant" but method was ad-hoc threshold
 
-### 2. Evidence Chain Completeness
+### 5. Evidence Chain Completeness
 
 **Question:** Can every claim trace back to data?
 
@@ -38,9 +124,9 @@ Check:
 Red flags:
 - Claim with no experiment
 - Experiment with no data
-- Method with no implementation
+- Method with no implementation file
 
-### 3. Hypothesis Coverage
+### 6. Hypothesis Coverage
 
 **Question:** Were all hypotheses tested?
 
@@ -54,7 +140,27 @@ Red flags:
 - Results not mapped to hypotheses
 - Selective reporting (only successful tests)
 
-### 4. Confounder Control
+### 7. Objective Completion (NEW - Critical)
+
+**Question:** Did we address all stated objectives?
+
+```
+Original goal: 4 objectives
+Check:
+  ✓ Objective 1: Completed
+  ✓ Objective 2: Completed
+  ⚠ Objective 3: Partially addressed
+  ✗ Objective 4: Missing
+
+Decision: Cannot proceed to COMPLETE if any objective unaddressed.
+```
+
+**What to do if missing:**
+- Block COMPLETE
+- Force ITERATING to address missing objectives
+- Or: explicitly acknowledge as limitation with reason
+
+### 8. Confounder Control
 
 **Question:** Are confounders addressed?
 
@@ -68,7 +174,7 @@ Red flags:
 - Ignoring obvious confounders
 - Claiming causation from correlation
 
-### 5. Limitation Acknowledgment
+### 9. Limitation Acknowledgment
 
 **Question:** Are limitations honest?
 
@@ -83,7 +189,7 @@ Red flags:
 - Limitations not connected to findings
 - "No limitations" claim
 
-### 6. Literature Positioning
+### 10. Literature Positioning
 
 **Question:** Is work properly positioned?
 
@@ -98,35 +204,48 @@ Red flags:
 - Ignoring contradictory literature
 - Misrepresenting prior findings
 
-## Review Process
+## Review Process by Phase
 
 ```
-For each phase:
-
 FORMULATION review:
   - Question specific? Falsifiable?
-  - Hypotheses distinct?
+  - Hypotheses distinct and testable?
   - Scale context defined?
+
+LITERATURE review:
+  - Claim Graph built?
+  - Contradictions/tensions noted? (not just gaps)
+  - Position relative to debates clear?
 
 METHOD review:
   - Methods match hypotheses?
+  - Strategy evaluated (cost vs. information gain)?
+  - Critical assumptions listed?
   - Data documented?
-  - Confounders identified?
+  - Units and variables understood?
 
-EXECUTION review:
+EXECUTION review (CRITICAL):
+  - Method fidelity: implemented == designed?
+  - Physical sanity: values reasonable?
   - All hypotheses tested?
   - Figures validated?
   - Failures recorded?
 
-SYNTHESIS review:
+VALIDATION review:
+  - Sanity checks pass?
   - Evidence chains complete?
-  - Claims calibrated?
+  - Assumptions still valid?
+
+SYNTHESIZING review:
+  - Claims calibrated to evidence?
   - Limitations acknowledged?
+  - Findings connected to hypotheses?
 
 WRITING review:
-  - Argument logical?
-  - Figures embedded?
-  - Citations accurate?
+  - Method-claim consistency?
+  - Figures embedded and accurate?
+  - Citations correct?
+  - Objectives all addressed?
 ```
 
 ## Review Object
@@ -137,25 +256,32 @@ WRITING review:
   "type": "review",
   "state": "completed",
   "attributes": {
-    "phase": "SYNTHESIZING",
+    "phase": "VALIDATING_RESULTS",
     "issues": [
       {
-        "dimension": "claim_validity",
-        "severity": "major",
-        "finding": "find_002",
-        "issue": "Strong claim from weak evidence",
-        "recommendation": "Reduce claim strength or strengthen evidence"
+        "dimension": "method_fidelity",
+        "severity": "critical",
+        "finding": "meth_001",
+        "issue": "Designed: Getis-Ord Gi*, Implemented: threshold",
+        "recommendation": "Either implement Gi* or revise method description"
       },
       {
-        "dimension": "confounder_control",
-        "severity": "minor",
+        "dimension": "physical_sanity",
+        "severity": "critical",
         "finding": "find_001",
-        "issue": "Confounder X not addressed",
-        "recommendation": "Acknowledge in limitations"
+        "issue": "Water availability 1,969,235 mm/year > precipitation",
+        "recommendation": "Discharge ≠ local availability. Reframe calculation."
+      },
+      {
+        "dimension": "objective_completion",
+        "severity": "major",
+        "issue": "Objective 4 (Regional analysis) missing",
+        "recommendation": "Either implement or explicitly acknowledge as limitation"
       }
     ],
     "passed": false,
-    "must_fix": ["find_002 overclaiming"],
+    "blocked_transitions": ["SYNTHESIZING"],
+    "must_fix": ["method fidelity", "physical sanity"],
     "timestamp": "2024-01-15T12:00:00"
   }
 }
@@ -165,28 +291,43 @@ WRITING review:
 
 | Severity | Meaning | Action |
 |----------|---------|--------|
-| Critical | Fatal flaw | Must fix before proceeding |
-| Major | Significant weakness | Should fix |
+| Critical | Fatal flaw, blocks progress | Must fix immediately |
+| Major | Significant weakness | Must fix before COMPLETE |
 | Minor | Small issue | Fix if time permits |
 | Suggestion | Improvement idea | Optional |
+
+**Critical severity triggers:**
+- Method != implementation
+- Physical values absurd
+- Critical assumption invalidated
+- Objective completely missing
+- Evidence fabricated
 
 ## Review Triggers
 
 **Mandatory reviews:**
-- After each phase (Quality Gate)
-- Before manuscript finalization
+- After VALIDATING_RESULTS (before SYNTHESIZING) — sanity check
+- After WRITING (before COMPLETE) — final review
+- After REFRAMING — verify new direction
 
-**Optional reviews:**
-- After unexpected results
-- After iteration
-- When stuck
+**Automatic blocks:**
+- Any critical issue → block transition
+- Must fix or explicitly acknowledge
 
 ## Self-Review Mindset
 
-Review as hostile reviewer:
+Review as **hostile reviewer**:
 
-- "What would a critic say?"
-- "Where are the weak points?"
 - "What would make me reject this?"
+- "What assumption would invalidate everything?"
+- "Did they actually do what they claimed?"
+- "Do these numbers make any sense?"
 
 Then fix before reviewer sees it.
+
+## Difference from Overclaim Detection
+
+- **Overclaim detection**: claims vs evidence strength
+- **Critical review**: methods vs implementation, physical sanity, assumptions
+
+Both needed. This catches different problems.
