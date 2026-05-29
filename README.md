@@ -169,7 +169,7 @@ Recommended models: Claude 3.5 Sonnet+, OpenAI o1, or similar high-capability re
 
 ## Version
 
-v0.2.1 - Architecture upgrade: Graph state machine, strategy layer, problem discovery, console transparency. All domain-specific examples abstracted to general principles.
+v0.2.3 - Fixed workspace structure enforcement, added console generation protocol. Tested with remote work/housing price research.
 
 ## License
 
