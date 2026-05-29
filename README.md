@@ -13,15 +13,21 @@ The skill is organized as a layered cognitive stack:
 ```
 Layer 1 — Scientific Philosophy (core/)
   Epistemology, evidence standards, identity
-  
+
 Layer 2 — Research Workflow (workflow/)
   Formulation → Methods → Execution → Synthesis → Writing
-  
-Layer 3 — Runtime Infrastructure (runtime/)
+
+Layer 3 — Strategy & Discovery (strategy/)
+  Method selection, problem discovery, resource allocation
+
+Layer 4 — Runtime Infrastructure (runtime/)
   Object system, event tracking, state machine, failure memory
-  
-Layer 4 — Quality Assurance (reviewer/)
+
+Layer 5 — Quality Assurance (reviewer/)
   Critique, overclaim detection, causal validity checks
+
+Layer 6 — Transparency (console/)
+  Research trajectory visualization, audit trail
 ```
 
 ## Key Features
@@ -32,19 +38,36 @@ Layer 4 — Quality Assurance (reviewer/)
 - Causal reasoning requirements: mechanism, confounders, counterfactuals
 - Scale awareness: explicit temporal/spatial/organizational scope for hypotheses
 
+**Strategy & Discovery Layer**
+- Problem discovery: find contradictions/tensions, not just gaps
+- Method evaluation matrix: cost vs information gain vs risk
+- Resource budgeting: experiments per hypothesis, reframing limits
+- Exploration/exploitation balance
+
 **Runtime Infrastructure**
-- Explicit 11-state research state machine prevents drift
+- Explicit 11-state research state machine with REFRAMING support
+- Transition guards: method fidelity, physical sanity, objective completion
 - Object-centric process tracking with JSON definitions
 - Event system for complete audit trail
 - Failure memory to avoid repeating mistakes
 
 **Quality Assurance**
+- Method fidelity check: implementation == design (scientific honesty)
+- Physical sanity check: values within reasonable bounds
+- Critical assumption audit: what would invalidate everything
 - Overclaim detection: automatic calibration of claims to evidence strength
 - Causal validity checks: pattern ≠ explanation
-- Critical review process before manuscript finalization
+- Objective completion check: all stated goals addressed
+
+**Transparency Layer**
+- Research console: 10 visualization components
+- Question evolution tree, hypothesis tracker, experiment trajectory
+- Evidence accumulation, assumption audit, failure memory
+- Complete state history with transition guards
 
 **Resource-Aware Planning**
 - Iteration limits per hypothesis (max 3)
+- Reframing budget (max 2)
 - Total experiment budget (max 10)
 - Convergence criteria: 2+ independent analyses
 
@@ -63,6 +86,9 @@ sciplex/
 │   ├── execution.md      # Execution and iteration
 │   ├── synthesis.md      # Evidence synthesis
 │   └── writing.md        # Manuscript production
+├── strategy/
+│   ├── strategy.md       # Method evaluation, resource allocation
+│   └── problem_discovery.md # Contradiction/tension finding
 ├── runtime/
 │   ├── object_system.md  # Object types and structure
 │   ├── event_system.md   # Event tracking
@@ -72,6 +98,8 @@ sciplex/
 │   ├── critique.md       # Critical review dimensions
 │   ├── overclaim.md      # Overclaim detection rules
 │   └── causal_validity.md # Causal claim validation
+├── console/
+│   └── console_design.md # Research trajectory visualization
 ├── scripts/
 │   └── execute_analysis.py # Deterministic execution
 └── references/
@@ -141,7 +169,7 @@ Recommended models: Claude 3.5 Sonnet+, OpenAI o1, or similar high-capability re
 
 ## Version
 
-v0.1.0 - Initial architecture, needs real-world testing.
+v0.2.1 - Architecture upgrade: Graph state machine, strategy layer, problem discovery, console transparency. All domain-specific examples abstracted to general principles.
 
 ## License
 

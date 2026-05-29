@@ -4,6 +4,24 @@
 
 Execute plan, adapt based on results, iterate toward convergence.
 
+## Module Responsibility
+
+**This module handles RUNTIME checks during execution:**
+- Pre-execution setup (load method, check prerequisites)
+- In-flight checkpoints (unit understanding, intermediate validation)
+- Immediate failure detection (during calculation)
+- Iteration decision (continue, refine, or escalate)
+
+**For POST-EXECUTION validation, see `reviewer/critique.md`:**
+- Method fidelity audit (comprehensive comparison)
+- Physical sanity review (domain-specific bounds)
+- Objective completion check (all goals addressed)
+- Critical assumption audit (what would invalidate)
+
+**Key distinction:**
+- Execution checks: "Is this step working?" (runtime)
+- Reviewer checks: "Is the overall result valid?" (post-hoc)
+
 ## Process
 
 ```
@@ -255,11 +273,11 @@ Every decision creates event:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00",
+  "timestamp": "ISO-8601",
   "action": "checkpoint|iterate|reframe",
-  "object_id": "meth_001",
-  "reason": "Method fidelity check: threshold != Gi*",
-  "decision": "Revise design to threshold-based, update manuscript description"
+  "object_id": "meth_XXX",
+  "reason": "Method fidelity check: implementation mismatch",
+  "decision": "Revise design, update manuscript description"
 }
 ```
 

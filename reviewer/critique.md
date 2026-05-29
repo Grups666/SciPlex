@@ -20,14 +20,14 @@ Not just "what are the limitations?" but:
 Check:
 ```
 For each method object:
-  - Design: "Use Getis-Ord Gi* spatial statistics"
+  - Design: "Use method X with parameters Y"
   - Implementation: Check actual code
   - Match? YES/NO
 
 Red flags:
-- Designed: Gi* → Implemented: threshold (降级)
-- Designed: k-means → Implemented: manual classification (降级)
-- Manuscript claims "statistically significant" but code uses ad-hoc threshold
+- Designed: statistical method → Implemented: ad-hoc threshold (downgrade)
+- Designed: algorithmic classification → Implemented: manual rules (downgrade)
+- Manuscript claims "rigorous method" but code uses simplified approach
 ```
 
 **Severity: CRITICAL if mismatch**
@@ -40,18 +40,11 @@ This is scientific dishonesty, not just limitation.
 
 Domain-specific checks:
 
-**For hydrology:**
+**Principle:**
 ```
-- Water availability > Precipitation? → ERROR
-- Groundwater depletion > Recharge + Extraction? → ERROR
-- TWS trend globally positive while climate change suggests negative? → QUESTION
-- Values 10x off from literature? → ERROR
-```
-
-**For general analysis:**
-```
-- Values within known physical bounds?
+- Derived values within known physical bounds?
 - Orders of magnitude reasonable?
+- Ratios and proportions meaningful?
 - Trends match established patterns (or have explanation)?
 ```
 
@@ -67,14 +60,14 @@ Domain-specific checks:
 For each finding, list assumptions:
 ```json
 {
-  "id": "find_001",
+  "id": "find_XXX",
   "attributes": {
     "statement": "X causes Y",
     "critical_assumptions": [
       {
-        "assumption": "Discharge represents local water availability",
+        "assumption": "Variable A represents underlying concept B",
         "validated": false,
-        "validation_method": "Compare with precipitation",
+        "validation_method": "Compare with established proxy",
         "if_invalid": "Entire finding collapses"
       },
       {
@@ -252,7 +245,7 @@ WRITING review:
 
 ```json
 {
-  "id": "rev_001",
+  "id": "rev_XXX",
   "type": "review",
   "state": "completed",
   "attributes": {
@@ -261,28 +254,28 @@ WRITING review:
       {
         "dimension": "method_fidelity",
         "severity": "critical",
-        "finding": "meth_001",
-        "issue": "Designed: Getis-Ord Gi*, Implemented: threshold",
-        "recommendation": "Either implement Gi* or revise method description"
+        "finding": "meth_XXX",
+        "issue": "Designed: method A, Implemented: method B",
+        "recommendation": "Either implement method A or revise method description"
       },
       {
         "dimension": "physical_sanity",
         "severity": "critical",
-        "finding": "find_001",
-        "issue": "Water availability 1,969,235 mm/year > precipitation",
-        "recommendation": "Discharge ≠ local availability. Reframe calculation."
+        "finding": "find_XXX",
+        "issue": "Derived value exceeds physical bounds",
+        "recommendation": "Check conceptual model. Reframe calculation."
       },
       {
         "dimension": "objective_completion",
         "severity": "major",
-        "issue": "Objective 4 (Regional analysis) missing",
+        "issue": "Objective N not addressed",
         "recommendation": "Either implement or explicitly acknowledge as limitation"
       }
     ],
     "passed": false,
     "blocked_transitions": ["SYNTHESIZING"],
     "must_fix": ["method fidelity", "physical sanity"],
-    "timestamp": "2024-01-15T12:00:00"
+    "timestamp": "ISO-8601"
   }
 }
 ```

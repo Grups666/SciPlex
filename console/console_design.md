@@ -4,6 +4,17 @@
 
 Visualize the complete research trajectory from question to conclusion. Make research transparent and auditable.
 
+## Important: Schema vs Runtime Data
+
+**All visual examples in this document are SCHEMAS, not static data.**
+
+- Schema shows structure and format
+- Runtime data is auto-generated from research objects
+- Agent should NOT copy these examples as actual data
+- Agent should generate console content from current research state
+
+This module defines WHAT to visualize and HOW to structure it. The actual content comes from the research objects created during execution.
+
 ## Console Architecture
 
 ```
@@ -62,32 +73,31 @@ Visual: Cards for each hypothesis with status
 
 ```
 ┌─────────────────────────┐
-│ H1: Groundwater driving  │
+│ H1: Hypthesis statement │
 │ Status: SUPPORTED        │
-│ Evidence: Strong         │
-│ Experiments: 2          │
+│ Evidence: Strength       │
+│ Experiments: N          │
 │ ┌─────────────────────┐ │
-│ │ exp_001: correlation │ │
-│ │ exp_002: trend       │ │
+│ │ exp_XXX: analysis    │ │
+│ │ exp_YYY: validation  │ │
 │ └─────────────────────┘ │
 └─────────────────────────┘
 
 ┌─────────────────────────┐
-│ H2: Climate driving     │
+│ H2: Hypthesis statement │
 │ Status: REFUTED         │
-│ Evidence: Strong         │
-│ Experiments: 1          │
+│ Evidence: Strength       │
+│ Experiments: N          │
 │ ┌─────────────────────┐ │
-│ │ exp_003: attribution │ │
+│ │ exp_XXX: test        │ │
 │ └─────────────────────┘ │
 └─────────────────────────┘
 
 ┌─────────────────────────┐
-│ H3: Mixed at different   │
-│     scales               │
+│ H3: Hypthesis statement │
 │ Status: INCONCLUSIVE    │
 │ Evidence: Weak           │
-│ Experiments: 1          │
+│ Experiments: N          │
 │ Needs: Refinement       │
 └─────────────────────────┘
 ```
@@ -102,21 +112,21 @@ Interactive:
 Visual: Flow diagram showing experiment sequence
 
 ```
-meth_001 (Gi* spatial)
+meth_XXX (method name)
   ↓
-exp_001 ── FAIL ──┐
+exp_XXX ── FAIL ──┐
   ↓                │
-fail_001: threshold substituted
+fail_XXX: failure description
   ↓                │
 ITERATING          │
   ↓                │
-meth_001' (threshold-based)
+meth_XXX' (revised method)
   ↓                │
-exp_002 ───────────┘
+exp_YYY ───────────┘
   ↓
 SUCCESS
   ↓
-fig_001: Hotspot map
+fig_XXX: Output visualization
 ```
 
 Interactive:
@@ -129,15 +139,15 @@ Interactive:
 Visual: Progress bar showing evidence strength
 
 ```
-Hypothesis H1:
+Hypothesis H_N:
   [████████░░] 80% → Strong
 
 Evidence lines:
-  ✓ exp_001: Correlation r=0.72, p<0.01 (Moderate)
-  ✓ exp_002: Trend consistent across subsets (Strong)
-  ✓ exp_003: Converges with literature (Moderate)
-  
-Convergence: 3 independent lines
+  ✓ exp_XXX: Evidence type A (Moderate)
+  ✓ exp_YYY: Evidence type B (Strong)
+  ✓ exp_ZZZ: Converges with literature (Moderate)
+
+Convergence: N independent lines
 ```
 
 Interactive:
@@ -149,15 +159,15 @@ Interactive:
 Visual: Dependency graph showing assumptions
 
 ```
-Finding F1: "Groundwater decline driven by extraction"
+Finding F_N: "Finding statement"
   │
-  ├── [✗] Assumption: Discharge = local availability
+  ├── [✗] Assumption: Key assumption text
   │     └── INVALIDATED → TRIGGERED REFRAMING
   │
-  ├── [✓] Assumption: GRACE captures groundwater
-  │     └── Validated: literature comparison
+  ├── [✓] Assumption: Another assumption
+  │     └── Validated: validation method
   │
-  └── [⚠] Assumption: No major confounders
+  └── [⚠] Assumption: Third assumption
         └── Acknowledged in limitations
 ```
 
@@ -171,20 +181,20 @@ Color coding:
 Visual: Network graph of literature claims
 
 ```
-[Paper A: TWS declining]
+[Paper A: Claim text]
         │
-        ├── supports → [Evidence: GRACE data]
+        ├── supports → [Evidence: Data source]
         │
-        ├── contradicts → [Paper B: TWS stable]
+        ├── contradicts → [Paper B: Contradicting claim]
         │                      │
-        │                      └── different time period
+        │                      └── reason for difference
         │
-        └── tension_with → [Paper C: Climate-driven]
+        └── tension_with → [Paper C: Tension claim]
                                   │
-                                  └── different scale
+                                  └── dimension of tension
 
 [My work]
-  └── resolves tension → "Scale-dependent attribution"
+  └── resolves tension → "Resolution approach"
 ```
 
 Interactive:
@@ -197,15 +207,15 @@ Interactive:
 Visual: Timeline of failures and lessons
 
 ```
-fail_001: Unit mismatch (ptotuse m³/s vs mm)
-  └── Lesson: Check units before calculation
-  └── Impact: Blocked exp_001
-  └── Recovery: exp_002 with conversion
+fail_XXX: Failure type description
+  └── Lesson: What to avoid
+  └── Impact: What was blocked
+  └── Recovery: How it was resolved
 
-fail_002: Method downgrade (Gi* → threshold)
-  └── Lesson: Implement checkpoint or document downgrade
-  └── Impact: Manuscript revision needed
-  └── Recovery: Updated method description
+fail_YYY: Another failure description
+  └── Lesson: What to avoid
+  └── Impact: What was blocked
+  └── Recovery: How it was resolved
 ```
 
 ### 9. Objective Progress
@@ -213,20 +223,20 @@ fail_002: Method downgrade (Gi* → threshold)
 Visual: Checklist with status
 
 ```
-Original Goal: 4 objectives
+Original Goal: N objectives
 
-[✓] Objective 1: Delineate hotspots
-    └── Completed in exp_002
+[✓] Objective 1: Description
+    └── Completed in exp_XXX
 
-[✓] Objective 2: Evaluate anomalies
-    └── Completed in exp_003
+[✓] Objective 2: Description
+    └── Completed in exp_YYY
 
-[⚠] Objective 3: Classify patterns
-    └── Partial: 3 of 5 patterns classified
+[⚠] Objective 3: Description
+    └── Partial: progress details
 
-[✗] Objective 4: Regional analysis
+[✗] Objective N: Description
     └── Missing
-    └── Reason: Time budget exhausted
+    └── Reason: Why not completed
     └── Status: Acknowledged as limitation
 ```
 
