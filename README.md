@@ -169,7 +169,7 @@ Recommended models: Claude 3.5 Sonnet+, OpenAI o1, or similar high-capability re
 
 ## Version
 
-v0.2.3 - Fixed workspace structure enforcement, added console generation protocol. Tested with remote work/housing price research.
+v0.2.4 - Architecture cleanup. Removed over-emphasis, cross-referenced modules, abstracted all concrete examples.
 
 ## License
 
