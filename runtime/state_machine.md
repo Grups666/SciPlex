@@ -162,8 +162,8 @@ sanity_check():
 
   2. Physical sanity check
      - Values in reasonable range?
-     - Example: water availability > precipitation? → ERROR
-     - Example: TWS trend +6mm/year globally? → QUESTION
+     - Check: derived values vs expected bounds
+     - Check: ratios and proportions meaningful
 
   3. Objective completion check
      - All stated objectives addressed?
@@ -186,7 +186,7 @@ critical_review():
      - If mismatch: scientific dishonesty flag
 
   3. Objective completion
-     - All 4 objectives from original goal addressed?
+     - All objectives from original goal addressed?
      - If missing: incomplete, cannot COMPLETE
 ```
 
@@ -202,11 +202,11 @@ critical_review():
     "phase_history": [...],
     "reframing_history": [
       {
-        "trigger": "Physical calculation absurd",
-        "from_phase": "VALIDATING_RESULTS",
-        "reason": "Discharge ≠ local availability",
-        "new_direction": "Use precipitation instead",
-        "timestamp": "2024-01-15T12:00:00"
+        "trigger": "Reason for reframing",
+        "from_phase": "PREVIOUS_PHASE",
+        "reason": "What assumption failed",
+        "new_direction": "What changed",
+        "timestamp": "ISO-8601"
       }
     ],
     "iterations": 0,
@@ -258,22 +258,22 @@ REFRAMING → FORMULATING
 
 ```
 Research Progress:
-  Phase: RUNNING_EXPERIMENTS
-  
-  Reframings: 1/2
-    - Reason: "Discharge ≠ local water availability"
-    - New direction: "Use precipitation as availability proxy"
-  
-  Iterations: 2/3
-  
+  Phase: CURRENT_PHASE
+
+  Reframings: N/MAX
+    - Reason: "Why reframing occurred"
+    - New direction: "What changed"
+
+  Iterations: N/MAX
+
   Objectives:
-    ✓ Objective 1: Hotspots delineated
-    ✓ Objective 2: Anomalies evaluated
-    ⏳ Objective 3: Classification (in progress)
-    ✗ Objective 4: Regional analysis (pending)
-  
+    ✓ Objective 1: Completed
+    ✓ Objective 2: Completed
+    ⏳ Objective N: In progress
+    ✗ Objective M: Pending
+
   Critical Assumptions:
-    ✓ WaterGAP units understood
-    ✓ Baseline period appropriate
-    ⚠ Discharge as availability (INVALIDATED → reframed)
+    ✓ Assumption A: Validated
+    ✓ Assumption B: Validated
+    ⚠ Assumption C: INVALIDATED → triggered reframing
 ```

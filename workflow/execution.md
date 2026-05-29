@@ -57,30 +57,30 @@ Output: {results[], figures[], decisions_log, failures[]}
 
 ```
 1. Load method object
-   meth_001.attributes:
-     - name: "Hotspot Analysis"
-     - approach: "Getis-Ord Gi* spatial statistics"
+   meth_XXX.attributes:
+     - name: "Method name"
+     - approach: "Technical approach"
      - parameters: {...}
-   
+
 2. Extract design intent
    What exactly was designed?
-   - Statistical method: Gi*
-   - Significance test: p < 0.05
-   - Output: hotspot mask
-   
+   - Method specification
+   - Success criteria
+   - Expected output
+
 3. Query failure memory
-   failures where method_type == "spatial":
-   → fail_002: "Gi* requires spatial weights matrix"
-   → Adjust: prepare weights matrix before running
-   
+   failures where method_type == similar:
+   → Identify past failures with this approach
+   → Adjust: prepare missing prerequisites
+
 4. Create implementation checklist
-   Required for Gi*:
-   - Spatial weights matrix ✓
-   - Distance band specification ✓
-   - Multiple testing correction ✓
-   
+   Required elements for this method:
+   - Prerequisite data/parameters
+   - Required transformations
+   - Validation criteria
+
 5. If missing elements: STOP
-   Log failure: "Gi* requires X, not available"
+   Log failure: "Method requires X, not available"
    Choose: implement missing element OR simplify AND document
 ```
 
@@ -91,25 +91,25 @@ Output: {results[], figures[], decisions_log, failures[]}
 ```
 Before any calculation:
   1. Check data units
-     - ptotuse: what unit? m³/s or mm/year?
+     - Variable: what unit?
      - Check: variable description in data source
      - Verify: read documentation, not assume
-     
+
   2. Check output units needed
-     - Target: mm/year for comparison with storage
-     
+     - Target: required unit for comparison or interpretation
+
   3. Conversion plan
      - If mismatch: calculate conversion
      - Document: how converted
      - Validate: check result magnitude
-     
+
   4. Sanity check after conversion
-     - 1,969,235 mm/year? → ERROR
-     - Should be ~500-2000 mm/year for precipitation
-     
-Example failure:
-  fail_001: "ptotuse in m³/s, treated as mm, absurd result"
-  lesson: "Always check units before calculation"
+     - Is result magnitude physically plausible?
+     - Compare to known reference values if available
+
+Example pattern (generic):
+  Failure: "Variable in unit A, treated as unit B, absurd result"
+  Lesson: "Always check units before calculation"
 ```
 
 ## Method Implementation with Fidelity Check (NEW)
@@ -120,22 +120,22 @@ IMPLEMENTATION_CHECKPOINT:
 Phase 1: Initial implementation
   - Implement according to design
   - Checkpoint: does code match design?
-  
+
   checkpoint_check():
-    Design: "Getis-Ord Gi* with distance band"
+    Design: "Method X with parameters Y"
     Code:
-      self.hotspot_mask = (use > 0.15) & (tws < -2)  ← threshold!
-    
+      implementation_different_from_design ← mismatch!
+
     Mismatch detected!
-    
+
     Decision required:
-      A) Fix implementation (implement Gi*)
+      A) Fix implementation (align with design)
       B) Revise design AND document why
-         - Reason: "Gi* too complex, use threshold"
+         - Reason: "Why method changed"
          - Update: method object
-         - Manuscript: "threshold-based hotspots" (not "statistically significant")
-      
-      Cannot: claim Gi* in manuscript but implement threshold
+         - Manuscript: "Revised method description" (not original claim)
+
+      Cannot: claim Method X in manuscript but implement Method Y
 ```
 
 ## Execution Protocol
@@ -169,26 +169,23 @@ LLM handles:
 **Before every attempt:**
 ```
 query_failure_memory(context):
-  
+
   # Similar method types
-  failures where approach contains "spatial":
-  → fail_001: "Threshold substituted for Gi*"
-  → lesson: "Don't claim statistical significance for threshold"
-  
+  failures where approach contains similar technique:
+  → lesson: "What went wrong with this approach"
+
   # Similar variables
-  failures where variables contains "discharge":
-  → fail_002: "Discharge ≠ local water availability"
-  → lesson: "Use precipitation or runoff per cell"
-  
+  failures where variables contains similar type:
+  → lesson: "Misinterpretation to avoid"
+
   # Similar domain
-  failures where domain == "hydrology":
-  → fail_003: "Unit mismatch caused absurd values"
-  → lesson: "Check units before calculation"
-  
+  failures where domain == current_domain:
+  → lesson: "Domain-specific pitfalls"
+
 Apply lessons:
-  - If Gi* in design: ensure implementation matches
-  - If using discharge: don't treat as local availability
-  - Before calculation: verify units
+  - Check if similar failure mode possible
+  - Add preventive check if applicable
+  - Document context for future reference
 ```
 
 **After failure:**
@@ -203,7 +200,7 @@ Record failure:
       "failure_mode": "Why it didn't work",
       "lesson": "What to avoid",
       "alternatives": "What might work",
-      "context_tags": ["spatial", "hydrology", "units"],
+      "context_tags": ["method_type", "domain", "data_type"],
       "timestamp": "..."
     }
   }
@@ -266,27 +263,27 @@ Every decision creates event:
 }
 ```
 
-## Example: Handling Physical Sanity Failure
+## Example: Handling Physical Sanity Failure (Abstract Pattern)
 
 ```
-Experiment exp_001:
-  water_availability = discharge / cell_area
-  Result: 1,969,235 mm/year
+Experiment exp_XXX:
+  derived_quantity = variable / transformation_factor
+  Result: implausible_value
 
 Sanity check:
-  precipitation ~ 500-2000 mm/year
-  availability > precipitation? → ERROR
-  
+  reference_value ~ expected_range
+  derived_value > reference_value? → ERROR
+
 Action:
   1. STOP (don't proceed to SYNTHESIZING)
   2. Log failure:
-     fail_002:
-       approach: "Discharge / cell_area"
-       failure_mode: "Discharge is cumulative, not local"
-       lesson: "Discharge ≠ water availability"
-       alternatives: "Use precipitation or runoff per unit area"
+     fail_XXX:
+       approach: "What was calculated"
+       failure_mode: "Why result implausible"
+       lesson: "Conceptual misunderstanding"
+       alternatives: "Correct approach"
   3. Decision: REFRAME (not just iterate)
-     - Discharge concept misunderstood
-     - Need to rethink "water availability"
-  4. New direction: Use precipitation as availability proxy
+     - Variable concept misunderstood
+     - Need to rethink the derivation
+  4. New direction: Use appropriate proxy or transformation
 ```
