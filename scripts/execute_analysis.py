@@ -21,6 +21,8 @@ import traceback
 from pathlib import Path
 from datetime import datetime
 
+from sciplex_runtime import append_event, load_state, save_state
+
 def load_method(method_path: Path):
     """Load method definition from JSON"""
     with open(method_path) as f:
@@ -145,6 +147,36 @@ def main():
         }
         with open(exp_json, 'w') as f:
             json.dump(exp_record, f, indent=2)
+
+        state = load_state(workspace)
+        is_new = result["exp_id"] not in state["objects"]
+        state["objects"][result["exp_id"]] = {
+            "type": "experiment",
+            "state": result["status"],
+            "path": str(exp_json.relative_to(workspace)),
+        }
+        if is_new:
+            state["counts"]["experiment"] = state["counts"].get("experiment", 0) + 1
+        save_state(workspace, state)
+
+        append_event(
+            workspace,
+            {
+                "action": "transition" if result["status"] == "completed" else "fail",
+                "object_id": result["exp_id"],
+                "object_type": "experiment",
+                "state_after": result["status"],
+                "reason": "Analysis execution completed"
+                if result["status"] == "completed"
+                else "Analysis execution failed",
+                "details": {
+                    "method_id": args.method,
+                    "data_id": args.data,
+                    "outputs": result.get("outputs", []),
+                    "lessons": result.get("lessons", ""),
+                },
+            },
+        )
 
 if __name__ == "__main__":
     main()

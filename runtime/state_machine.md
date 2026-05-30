@@ -170,6 +170,19 @@ Each state transition produces:
 
 Console generation is automatic, not optional. It provides the audit trail for research transparency.
 
+Use `scripts/sciplex_runtime.py set-phase` to record phase transitions:
+
+```bash
+python scripts/sciplex_runtime.py --workspace <working-directory> set-phase \
+  --phase DESIGNING_METHODS \
+  --reason "Question, hypotheses, and evidence patterns passed formulation gate"
+```
+
+The helper records the transition and warns about unusual backward transitions.
+It intentionally does not block reframing, iteration, or agent-justified
+backtracking. Scientific guards are evaluated by the agent and reviewer modules;
+the runtime preserves the decision trail.
+
 ## Transition Guards (Sanity Checks)
 
 **Guard at VALIDATING_RESULTS:**

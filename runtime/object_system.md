@@ -28,6 +28,7 @@ Every meaningful research artifact is an object with:
 | failed | Failed attempts | recorded |
 | paper | Manuscript | draft, reviewed, final |
 | console | Research trajectory visualization | active |
+| review | Quality review records | completed |
 
 ## Object Structure
 
@@ -53,9 +54,13 @@ Physical files in same directory:
 
 ```
 sciplex/
+├── config/            # Project-level SciPlex configuration
+│   ├── .env.local     # Optional private overrides (never commit)
+│   ├── config.yaml    # Optional non-secret project settings
+│   └── resolved.json  # Optional redacted resolved config snapshot
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/           # All content here
+└── objects/           # All research content here
     ├── orchestrator/  # Research question, progress tracking
     ├── hypothesis/    # Hypotheses (can also be in orchestrator/)
     ├── problem/       # Identified problems
@@ -72,6 +77,25 @@ sciplex/
 ```
 
 Hypotheses can be stored in `orchestrator/` or `hypothesis/`. All other types have dedicated directories.
+
+`config/` is not an object directory. It contains project-level settings that
+control provider selection, model profiles, timeouts, output preferences, and
+other runtime options for this research workspace.
+
+Configuration precedence is:
+
+1. `sciplex/config/.env.local`
+2. `sciplex/config/config.yaml`
+3. skill-level `config/.env.local`
+4. skill-level `config/config.yaml`
+5. driver agent environment
+6. built-in defaults
+
+Project-level config should override skill-level defaults. Skill-level config
+should provide reusable user or machine defaults. Driver-level fallback should
+only be used when SciPlex config is silent. Secrets must not be copied into
+objects, events, manuscripts, or console data; `resolved.json`, if written,
+should record only redacted values and provider status.
 
 ## State Index
 
@@ -96,6 +120,27 @@ Hypotheses can be stored in `orchestrator/` or `hypothesis/`. All other types ha
   "last_updated": "2024-01-15T10:30:00"
 }
 ```
+
+## Runtime Helper
+
+Use `scripts/sciplex_runtime.py` for deterministic bookkeeping:
+
+```bash
+python scripts/sciplex_runtime.py --workspace <working-directory> init
+python scripts/sciplex_runtime.py --workspace <working-directory> create-object \
+  --type literature \
+  --state identified \
+  --attributes path/to/literature_attributes.json \
+  --reason "Paper identified during OpenAlex search"
+python scripts/sciplex_runtime.py --workspace <working-directory> transition-object \
+  --id lit_001 \
+  --state read \
+  --reason "Key claims extracted"
+```
+
+The helper handles IDs, object files, `state.json`, and `events.json`. It does
+not decide scientific validity, evidence strength, method choice, or whether a
+transition is epistemically justified. Those decisions remain with the agent.
 
 ## Object Lifecycle
 

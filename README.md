@@ -115,9 +115,13 @@ When invoked, SciPlex creates a workspace:
 
 ```
 sciplex/
+├── config/            # Project-level configuration
+│   ├── .env.local     # Optional private project overrides
+│   ├── config.yaml    # Optional non-secret project settings
+│   └── resolved.json  # Optional redacted resolved config snapshot
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/           # All files here
+└── objects/           # All research files here
     ├── orchestrator/  # Research question, hypotheses
     ├── literature/    # Papers + notes
     ├── data/          # Datasets
@@ -128,6 +132,31 @@ sciplex/
     ├── failed/        # Failed attempts
     └── paper/         # Manuscript
 ```
+
+Configuration is layered. Project-level config in `sciplex/config/` overrides
+skill-level config in `skills/sciplex/config/`, which overrides the driver
+agent environment and built-in defaults. The driver agent's LLM and SciPlex
+internal LLM providers are separate; literature providers degrade independently
+when credentials are unavailable.
+
+Initialize this layout with:
+
+```bash
+python scripts/init_workspace.py --workspace <working-directory>
+```
+
+Use the runtime helper for deterministic bookkeeping:
+
+```bash
+python scripts/sciplex_runtime.py --workspace <working-directory> create-object \
+  --type hypothesis \
+  --state formulated \
+  --attributes path/to/hypothesis_attributes.json \
+  --reason "Hypothesis generated during formulation"
+```
+
+The helper records IDs, object files, state, and events. It does not choose the
+research question, interpret evidence, or decide whether a claim is valid.
 
 ## Usage
 
@@ -169,7 +198,7 @@ Recommended models: Claude Opus 4.6+, GLM 5.1+, or similar high-capability reaso
 
 ## Version
 
-v0.2.5 - Complete object type definitions, event implementation clarification.
+v0.2.6 - Layered configuration and deterministic runtime bookkeeping.
 
 ## License
 

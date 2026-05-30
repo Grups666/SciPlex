@@ -124,3 +124,18 @@ Events support meta-reasoning:
 ## Implementation
 
 Events are written to `events.json` on every state transition. Empty events file indicates execution did not follow state machine protocol.
+
+Use `scripts/sciplex_runtime.py` to write events consistently:
+
+```bash
+python scripts/sciplex_runtime.py --workspace <working-directory> event \
+  --action fail \
+  --object-id meth_001 \
+  --object-type method \
+  --reason "Implementation did not match designed method" \
+  --details '{"severity": "critical"}'
+```
+
+The runtime helper records audit events and updates bookkeeping. It does not
+replace scientific judgment; the agent must still explain why the event matters
+and what decision follows from it.

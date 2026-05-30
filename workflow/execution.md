@@ -173,6 +173,9 @@ Script handles:
 - Logging
 - Error handling
 - Output organization
+- Experiment object record
+- State index update
+- Event log update
 
 LLM handles:
 - Method selection

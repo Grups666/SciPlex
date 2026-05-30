@@ -138,6 +138,10 @@ Create workspace at `<current_working_directory>/sciplex/`:
 
 ```
 sciplex/
+├── config/            # Project-level SciPlex configuration
+│   ├── .env.local     # Optional private project overrides (never commit)
+│   ├── config.yaml    # Optional non-secret project config
+│   └── resolved.json  # Optional resolved config snapshot for audit
 ├── state.json         # Object index
 ├── events.json        # Event log
 └── objects/           # All research content
@@ -155,7 +159,43 @@ sciplex/
     └── console/       # Trajectory visualization
 ```
 
-All content goes in `objects/`. See `runtime/object_system.md` for structure.
+Research artifacts go in `objects/`. Project-specific configuration goes in
+`config/`. See `runtime/object_system.md` for structure and `config/README.md`
+for configuration precedence.
+
+**Configuration resolution:**
+
+SciPlex uses layered configuration. Higher layers override lower layers:
+
+1. Project-level private config: `<workspace>/sciplex/config/.env.local`
+2. Project-level non-secret config: `<workspace>/sciplex/config/config.yaml`
+3. Skill-level private config: `<skills>/sciplex/config/.env.local`
+4. Skill-level non-secret config: `<skills>/sciplex/config/config.yaml`
+5. Driver agent environment variables
+6. Built-in safe defaults
+
+The driver agent and SciPlex internal LLM provider are separate layers. If
+project and skill config do not specify an internal LLM, SciPlex may fall back
+to the driver agent's current LLM environment. Literature providers are resolved
+independently: OpenAlex and arXiv may work without API keys, while Zotero,
+Semantic Scholar, NCBI, or private databases should be disabled or degraded when
+credentials are missing.
+
+If a resolved config snapshot is generated, redact secrets before writing
+`config/resolved.json`. Record which providers were enabled, disabled, or
+degraded so the research audit trail is reproducible without leaking keys.
+
+Use `scripts/init_workspace.py` to create the workspace layout and redacted
+config snapshot:
+
+```bash
+python scripts/init_workspace.py --workspace <current_working_directory>
+```
+
+For ongoing bookkeeping, use `scripts/sciplex_runtime.py` to create objects,
+record events, refresh config snapshots, and log phase transitions. The runtime
+helper maintains the research ledger; the agent still makes all scientific
+judgments.
 
 ### 2. Formulate
 
@@ -285,6 +325,8 @@ Output:
 
 | Script | Purpose |
 |--------|---------|
+| `init_workspace.py` | Create workspace layout and redacted resolved config |
+| `sciplex_runtime.py` | Deterministic config, object, event, and phase bookkeeping |
 | `execute_analysis.py` | Deterministic analysis execution |
 | `validate_results.py` | Check result sanity |
 | `format_paper.py` | LaTeX/markdown formatting |
