@@ -158,7 +158,7 @@ This skill is designed for agents with:
 - Code execution abilities
 - Web search for literature
 
-Recommended models: Claude 3.5 Sonnet+, OpenAI o1, or similar high-capability reasoning models.
+Recommended models: Claude Opus 4.6+, GLM 5.1+, or similar high-capability reasoning models.
 
 ## Limitations
 
