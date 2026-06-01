@@ -19,7 +19,7 @@ Every meaningful research artifact is an object with:
 | problem | Identified research problems | identified, resolved |
 | literature | Papers, notes, claim positions | identified, read, cited |
 | problem | Identified research problems | identified, resolved |
-| data | Datasets | identified, validated, processed |
+| data | Datasets | identified, acquired, validated, processed |
 | method | Analysis methods | designed, implemented, validated |
 | strategy | Method evaluation, budget allocation | evaluated, active |
 | experiment | Analysis runs | running, completed, failed |
@@ -50,17 +50,22 @@ Physical files in same directory:
 - `objects/method/meth_001.json` — definition
 - `objects/method/meth_001.py` — implementation
 
+Object `file_path` attributes are relative to the `sciplex/` root. For example,
+use `objects/paper/brief_001.md`, not `sciplex/objects/paper/brief_001.md`.
+
 ## Object Directory
 
 ```
 sciplex/
+├── .sciplex           # Workspace contract and path rules
+├── context.md         # Brief context reloaded before file operations
 ├── config/            # Project-level SciPlex configuration
 │   ├── .env.local     # Optional private overrides (never commit)
 │   ├── config.yaml    # Optional non-secret project settings
 │   └── resolved.json  # Optional redacted resolved config snapshot
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/           # All research content here
+└── objects/           # All research artifacts here
     ├── orchestrator/  # Research question, progress tracking
     ├── hypothesis/    # Hypotheses (can also be in orchestrator/)
     ├── problem/       # Identified problems
@@ -77,6 +82,30 @@ sciplex/
 ```
 
 Hypotheses can be stored in `orchestrator/` or `hypothesis/`. All other types have dedicated directories.
+
+No research artifact directory should be created directly under `sciplex/`.
+Allowed root entries are `.sciplex`, `context.md`, `config/`, `state.json`,
+`events.json`, and `objects/`. Dataset manifests, raw-data pointers, downloads,
+intermediate files, scripts, reports, figures, and console files belong under
+the relevant `objects/<type>/` directory.
+
+For acquired public datasets, prefer:
+
+```
+objects/data/data_001.json        # data object
+objects/data/data_001/manifest.json
+objects/data/data_001/raw/<downloaded files>
+objects/data/data_001/processed/<derived files>
+```
+
+Data objects should distinguish `identified` (known source), `acquired`
+(artifact downloaded with manifest/checksum), `validated` (schema/quality
+checked), and `processed` (analysis-ready derivatives exist). A landing page,
+API description, or dataset documentation record is not acquired raw data.
+
+Before creating, reading, or updating files, load `.sciplex` and `context.md`
+from the workspace. These files define the local path contract and any
+project-level output target or evidence-mode constraints.
 
 `config/` is not an object directory. It contains project-level settings that
 control provider selection, model profiles, timeouts, output preferences, and
@@ -136,11 +165,51 @@ python scripts/sciplex_runtime.py --workspace <working-directory> transition-obj
   --id lit_001 \
   --state read \
   --reason "Key claims extracted"
+python scripts/sciplex_runtime.py --workspace <working-directory> remove-object \
+  --id exp_bad \
+  --reason "Incorrect object id prefix; retained file for audit and recreated with runtime id"
+python scripts/sciplex_runtime.py --workspace <working-directory> artifact-path \
+  --type data \
+  --filename data_001.json
+python scripts/sciplex_runtime.py --workspace <working-directory> validate-workspace
 ```
 
 The helper handles IDs, object files, `state.json`, and `events.json`. It does
 not decide scientific validity, evidence strength, method choice, or whether a
 transition is epistemically justified. Those decisions remain with the agent.
+
+Prefer runtime-assigned IDs. If you provide an explicit `--id`, it must use the
+type prefix defined by the object system, such as `exp_001` for experiments and
+`fig_001` for figures. Invalid IDs should be removed from the state index with
+`remove-object` and recreated correctly; do not silently leave inconsistent
+objects in active state.
+
+`validate-workspace` checks the workspace contract, root-level path mistakes,
+JSON parseability, required object directories, and whether object creation is
+covered by events. It also checks basic output-target standards for final
+papers/reports, whether cited literature has advanced beyond `identified`, and
+whether final outputs have corresponding review and console/audit objects. It
+also flags object-like JSON files under `objects/` that are not indexed in
+`state.json`; scratch files and repair notes belong outside active object
+directories unless they are real objects. For publication-style outputs, it
+checks that the reference section is consistent with cited literature object
+metadata and that final reviews cover the required critique dimensions.
+Critical or major issues block `COMPLETE` unless the study scope is explicitly
+downgraded and recorded.
+
+Use `validate-workspace --require-complete` for final acceptance tests. Plain
+`validate-workspace` is allowed for in-progress audits and may pass while a
+paper is still draft or the workspace is still in `WRITING`.
+Completion-required validation expects the research graph to be closed: a
+problem/tension object exists, hypotheses are assessed beyond `formulated`,
+methods are validated, cited literature is marked `cited` or `validated`, and
+the final output records lineage to hypotheses, data/sources, methods,
+findings, figures, and citations.
+Publication-style outputs should also include a key-claim audit that maps core
+claims to evidence links, evidence strength, and limitations.
+It also expects the final console/audit summary to be current: object counts,
+validator status, and final output metadata should match `state.json` and the
+actual output files.
 
 ## Object Lifecycle
 

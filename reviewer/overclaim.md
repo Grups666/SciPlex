@@ -102,7 +102,7 @@ For each finding:
 ## Examples
 
 **Overclaim:**
-> "Our analysis demonstrates that groundwater depletion causes agricultural decline."
+> "Our analysis demonstrates that exposure X causes outcome Y."
 
 **Detection:**
 - Verb: "demonstrates" (requires Strong)
@@ -111,7 +111,7 @@ For each finding:
 - Scope: missing
 
 **Correction:**
-> "Our analysis suggests groundwater depletion is associated with agricultural decline in this study region (North China Plain, 2000-2019). Mechanisms and confounders require further investigation."
+> "Our analysis suggests exposure X is associated with outcome Y in this study population and period. Mechanisms and confounders require further investigation."
 
 **Overclaim:**
 > "We prove that the new method outperforms existing approaches."

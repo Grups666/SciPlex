@@ -9,7 +9,7 @@ Discover research problems from literature—not just "what hasn't been done" bu
 | Type | Definition | Example |
 |------|------------|---------|
 | Gap | Nobody studied X | "No global assessment of X" |
-| Contradiction | Paper A says X, Paper B says ¬X | "A: groundwater increasing; B: decreasing" |
+| Contradiction | Paper A says X, Paper B says ¬X | "A: outcome increasing; B: decreasing" |
 | Tension | Paper A says X under condition C1, Paper B says X under C2, conditions conflict | "A: trend positive at basin scale; B: negative at point scale" |
 | Inconsistency | Same method gives different results | "A's trend: +2mm/yr; B's same method: -3mm/yr" |
 | Unexplained | Established pattern without explanation | "All studies show X, but mechanism unclear" |
@@ -18,7 +18,7 @@ Discover research problems from literature—not just "what hasn't been done" bu
 
 **Gap ( weakest problem):**
 ```
-"Nobody studied groundwater decline in North China Plain"
+"Nobody studied outcome Y for population Z"
 
 Problem: 
   - May not matter
@@ -33,8 +33,8 @@ Check: Why hasn't it been studied?
 
 **Contradiction (stronger problem):**
 ```
-Paper A: "Groundwater sustainable in North China Plain"
-Paper B: "Groundwater depletion critical in North China Plain"
+Paper A: "The system is stable under condition C"
+Paper B: "The system is unstable under condition C"
 
 Problem:
   - Direct conflict
@@ -54,9 +54,9 @@ Resolution path:
 
 **Tension (most subtle, often most valuable):**
 ```
-Paper A: "TWS decline driven by groundwater extraction"
+Paper A: "The outcome is mainly driven by mechanism A"
          (at basin scale, 2000-2015)
-Paper B: "TWS decline driven by climate variability"
+Paper B: "The outcome is mainly driven by mechanism B"
          (at point scale, 2000-2015)
 
 Problem:
@@ -167,7 +167,7 @@ Evaluate:
     "tension_dimension": "scale",
     "value": "high",
     "tractability": "high",
-    "resolving_question": "What is the scale-dependent contribution of extraction vs. climate to TWS decline?",
+    "resolving_question": "What is the scale-dependent contribution of mechanism A versus mechanism B to outcome Y?",
     "hypotheses_generated": ["hyp_001", "hyp_002"]
   }
 }
@@ -191,15 +191,15 @@ Edges:
 
 Example:
 
-[Claim: TWS declining in NCP]
+[Claim: Outcome Y is declining in population Z]
   ↓ supports
-[Evidence: GRACE trend -5mm/yr]
+[Evidence: measured trend -5 units/year]
   ↓ depends_on
-[Assumption: GRACE captures groundwater]
+[Assumption: the measurement source captures outcome Y]
 
-[Claim: TWS stable in NCP]
+[Claim: Outcome Y is stable in population Z]
   ↓ contradicts
-[Claim: TWS declining in NCP]
+[Claim: Outcome Y is declining in population Z]
 
 [Claim: Decline driven by extraction]
   ↓ tension_with (scale differs)

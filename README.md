@@ -115,13 +115,15 @@ When invoked, SciPlex creates a workspace:
 
 ```
 sciplex/
+├── .sciplex           # Workspace contract and path rules
+├── context.md         # Brief context to reload before file operations
 ├── config/            # Project-level configuration
 │   ├── .env.local     # Optional private project overrides
 │   ├── config.yaml    # Optional non-secret project settings
 │   └── resolved.json  # Optional redacted resolved config snapshot
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/           # All research files here
+└── objects/           # All research artifacts here
     ├── orchestrator/  # Research question, hypotheses
     ├── literature/    # Papers + notes
     ├── data/          # Datasets
@@ -132,6 +134,10 @@ sciplex/
     ├── failed/        # Failed attempts
     └── paper/         # Manuscript
 ```
+
+Only `.sciplex`, `context.md`, `config/`, `state.json`, `events.json`, and
+`objects/` belong at the workspace root. Research artifacts belong under
+`objects/<object_type>/`; for example use `objects/data/`, not `sciplex/data/`.
 
 Configuration is layered. Project-level config in `sciplex/config/` overrides
 skill-level config in `skills/sciplex/config/`, which overrides the driver
@@ -153,7 +159,18 @@ python scripts/sciplex_runtime.py --workspace <working-directory> create-object 
   --state formulated \
   --attributes path/to/hypothesis_attributes.json \
   --reason "Hypothesis generated during formulation"
+python scripts/sciplex_runtime.py --workspace <working-directory> artifact-path \
+  --type data \
+  --filename data_001.json
+python scripts/sciplex_runtime.py --workspace <working-directory> validate-workspace
+python scripts/literature_search.py --workspace <working-directory> \
+  --query "your research question" \
+  --per-page 25
 ```
+
+`validate-workspace` checks root path mistakes, parseable JSON, required object
+directories, and event coverage. Major or critical issues block `COMPLETE`
+unless the study scope is honestly downgraded.
 
 The helper records IDs, object files, state, and events. It does not choose the
 research question, interpret evidence, or decide whether a claim is valid.
@@ -166,7 +183,7 @@ research question, interpret evidence, or decide whether a claim is valid.
 
 Example:
 ```
-/sciplex "Investigate groundwater depletion patterns in North China Plain using GRACE data"
+/sciplex "Investigate whether intervention X changes outcome Y using public data"
 ```
 
 ## Design Philosophy
@@ -198,7 +215,10 @@ Recommended models: Claude Opus 4.6+, GLM 5.1+, or similar high-capability reaso
 
 ## Version
 
-v0.2.6 - Layered configuration and deterministic runtime bookkeeping.
+v0.2.7 - Main-text-only paper word-count validation, core-section depth gates,
+appendix-padding detection, result-consistency review, curated literature
+relevance checks, public-data acquisition helpers, and stricter citation/source
+linking for publication-style outputs.
 
 ## License
 

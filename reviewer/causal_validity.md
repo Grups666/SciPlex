@@ -80,7 +80,7 @@ ALTERNATIVES:
 ## Causal Claim Correction
 
 **Invalid causal claim:**
-> "Groundwater depletion causes agricultural decline (r=0.72, p<0.01)."
+> "Exposure X causes outcome Y (r=0.72, p<0.01)."
 
 **Analysis:**
 - Evidence: correlation only
@@ -90,7 +90,7 @@ ALTERNATIVES:
 - Alternatives: not considered
 
 **Correction:**
-> "Groundwater depletion is associated with agricultural decline (r=0.72, p<0.01). Potential mechanisms include reduced irrigation capacity and increased pumping costs. Confounders such as policy changes, technological adoption, and market conditions were not controlled in this analysis and may contribute to the observed pattern. Causal attribution requires further investigation with confounder control and mechanism validation."
+> "Exposure X is associated with outcome Y (r=0.72, p<0.01). Potential mechanisms are plausible but not directly tested. Confounders such as policy changes, technology adoption, and selection effects were not controlled in this analysis and may contribute to the observed pattern. Causal attribution requires further investigation with confounder control and mechanism validation."
 
 ## Causal Reasoning Patterns
 

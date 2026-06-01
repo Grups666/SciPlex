@@ -44,8 +44,32 @@ Output: {question, hypotheses[], evidence_patterns[], claim_position, problem}
 
 Use `references/literature_search.md` for systematic approach.
 
+When provider access is available, use `scripts/literature_search.py` to create
+a real candidate pool before creating literature objects:
+
+```bash
+python scripts/literature_search.py --workspace <working-directory> \
+  --query "<research topic or claim cluster>" \
+  --per-page 25 \
+  --output literature_candidates.json
+```
+
+Candidate files are discovery artifacts, not citations. Create literature
+objects only after inspecting candidates for relevance, source role, and
+metadata quality.
+
+Before finalizing a publication-style output, run `scripts/audit_literature.py`
+when cited literature has provider IDs. Treat provider metadata mismatches as
+citation repair work; do not hide them by changing the review verdict alone.
+The audit helper attempts provider lookup by stable ID, DOI, and title. If ID
+or DOI points to the wrong work, repair the literature object's metadata and
+record the repair event before finalization. Small year differences can reflect
+online-first versus issue publication dates; wrong titles, wrong DOI, or wrong
+provider IDs require correction.
+
 For each paper:
 - Extract: question, methods, findings, limitations
+- Record: source_role/evidence_role, stable identifier or needs_verification
 - Map to Claim Graph: what does this claim? what does it refute?
 - Identify: relevance to your question
 
@@ -72,8 +96,8 @@ Key insight: Gap ≠ contribution. Contradiction resolution = contribution.
 
 Example tension:
 ```
-Paper A: "TWS decline driven by extraction" (basin scale)
-Paper B: "TWS decline driven by climate" (point scale)
+Paper A: "Outcome Y is driven by mechanism A" (aggregate scale)
+Paper B: "Outcome Y is driven by mechanism B" (local scale)
 
 Problem: Both could be right at different scales
 Question: "What is the scale-dependent contribution?"

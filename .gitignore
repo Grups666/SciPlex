@@ -20,3 +20,4 @@ __pycache__/
 
 # Test workspace (if created during testing)
 sciplex_test_workspace/
+_sciplex_smoke/

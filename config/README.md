@@ -51,6 +51,38 @@ Literature provider configuration is independent from LLM configuration.
 Missing credentials should degrade the provider list, not break unrelated
 workflow phases.
 
+## Data Acquisition
+
+SciPlex should actively acquire public data when the study requires raw-data
+analysis. Public URLs can be downloaded with `scripts/data_acquire.py`, which
+records URL, bytes, checksum, manifest path, and acquisition time in the data
+object.
+
+If a dataset requires credentials, manual registration, a proprietary portal,
+or a terms-of-use decision, record that access status explicitly. Do not let the
+agent silently convert unavailable raw data into a completed raw-data analysis;
+downgrade the evidence mode to documented-statistics synthesis, protocol, or
+scoping until acquisition and processing actually happen.
+
+## Output Defaults
+
+Output preferences are configurable because papers, reports, briefs, protocols,
+and console audits have different standards.
+
+```env
+SCIPLEX_OUTPUT_TARGET=report
+SCIPLEX_REPORT_WORDS=3000-6000
+SCIPLEX_PAPER_WORDS=7000-10000
+SCIPLEX_PAPER_MAIN_FIGURES=4-8
+SCIPLEX_PAPER_REFERENCES=25-60
+SCIPLEX_DEFAULT_EVIDENCE_MODE=exploratory_scoping
+```
+
+These values guide review gates and writing standards. They do not override
+scientific judgment: if evidence is only literature synthesis or
+documented-statistics synthesis, the output should say so and avoid claiming
+completed raw-data empirical analysis.
+
 ## Workspace Config
 
 On initialization, create:

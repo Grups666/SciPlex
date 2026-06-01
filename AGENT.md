@@ -114,12 +114,26 @@ identity and core protocols must remain field-neutral.
    depends on. Avoid hidden prerequisites.
 
 11. Auditable side effects.
-   Scripts that change research state should update the relevant objects,
-   state index, event log, and console data or clearly document why they do not.
+    Scripts that change research state should update the relevant objects,
+    state index, event log, and console data or clearly document why they do not.
 
 12. Backward-compatible evolution.
     When schemas or protocols change, preserve migration paths or document the
     version change clearly.
+
+13. Workspace contract first.
+    Each research workspace should carry a local contract and short context file
+    that define path rules, output target, evidence mode, and audit
+    expectations. Agents should reload these before file operations.
+
+14. Output-target awareness.
+    A paper, report, brief, protocol, and console audit have different quality
+    bars. Do not treat all outputs as papers or all papers as short reports.
+
+15. Model/provider neutrality.
+    The driver agent, SciPlex's internal LLM profiles, and external research
+    providers are separate layers. Do not assume they are the same model or
+    service, and do not hardcode any provider into core behavior.
 
 ## Modification Rules
 
@@ -145,6 +159,10 @@ identity and core protocols must remain field-neutral.
 - When adding config, document its precedence, secret-handling expectations,
   fallback behavior, and whether it belongs to project-level config or
   skill-level config.
+- When changing workspace layout, update the runtime helper, object-system
+  documentation, review checks, and initialization behavior together.
+- When changing writing behavior, define target-specific standards without
+  making any single discipline, journal, or task the hidden default.
 
 ## Non-Goals
 

@@ -17,6 +17,7 @@ Steps:
      - What data exists?
      - What are limitations?
      - What preprocessing needed?
+     - Can it be acquired now, or only documented?
   
   3. Select analytical methods
      - Match method to hypothesis structure
@@ -92,6 +93,44 @@ For each data source, create object:
   }
 }
 ```
+
+## Data Acquisition
+
+Public data should be acquired as an artifact when the study claims raw-data
+analysis. Do not treat a dataset landing page, API description, or paper
+summary as acquired raw data.
+
+Use the generic acquisition helper for stable public URLs:
+
+```bash
+python scripts/data_acquire.py --workspace <working-directory> \
+  --url "<public-data-url>" \
+  --name "<dataset name>" \
+  --source "<provider>"
+```
+
+The helper writes:
+
+- `objects/data/<data_id>/raw/<filename>`: downloaded artifact
+- `objects/data/<data_id>/manifest.json`: URL, bytes, checksum, headers
+- `objects/data/<data_id>.json`: data object with `access_status: acquired`
+
+If the source requires registration, manual browser interaction, paid access,
+or credentials, record the blocker in the data object and do not label the study
+as `raw_data_analysis` until files are actually acquired and processed.
+
+When acquisition fails for a public URL, do not infer that the dataset is
+unavailable from a single failed request. Use a generic fallback sequence:
+
+1. Retry with source-page `--referer` and normal browser-like request headers.
+2. Check the provider landing page for alternate direct files, API endpoints,
+   mirrors, documentation files, or smaller extracts.
+3. Record each failed attempt as a `failed` object and keep the data object at
+   `identified` or `blocked`, not `acquired`.
+4. If at least one relevant dataset is acquired, proceed with a narrower raw-data
+   analysis and clearly state which hypotheses it can and cannot test.
+5. If no data is acquired, switch to `documented_statistics_synthesis`,
+   `protocol`, or `report`; do not present it as completed raw-data analysis.
 
 ## Workflow Design
 

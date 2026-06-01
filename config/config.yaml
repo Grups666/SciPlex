@@ -1,0 +1,27 @@
+# SciPlex Project Configuration
+# Non-secret settings for the research workspace
+
+# Literature provider settings
+providers:
+  openalex:
+    enabled: true
+    base_url: https://api.openalex.org
+  arxiv:
+    enabled: true
+  zotero:
+    enabled: true
+    base_url: https://api.zotero.org
+  semantic_scholar:
+    enabled: true
+    base_url: https://api.semanticscholar.org/graph/v1
+
+# Provider timeout in seconds
+provider_timeout_seconds: 30
+
+# LLM task profiles (model names only, non-secret)
+llm_profiles:
+  default: glm-5.1
+  literature: glm-5.1
+  method: glm-5.1
+  review: glm-5.1
+  writing: glm-5.1

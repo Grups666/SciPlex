@@ -18,6 +18,34 @@ Each section should make the reader ready for the next.
 
 ## Section-by-Section Guide
 
+For a full paper, draft section-by-section rather than as one compressed
+summary. Keep section files or an explicit section plan until the final paper
+passes validation.
+
+Suggested word allocation for a standard full paper. These are main-text
+targets: bibliography, appendices, reproducibility logs, claim audits, and
+source inventories are outside the paper body and cannot be used to satisfy a
+journal-style word target.
+
+| Section | Typical Target |
+|---------|----------------|
+| Abstract | 200-300 |
+| Introduction | 1000-1500 |
+| Literature/background | 1200-1800 |
+| Methods/data | 1000-1500 |
+| Results/synthesis | 1500-2200 |
+| Discussion/limitations | 1200-1800 |
+| Conclusion | 400-700 |
+
+Minimum viable section depth for a publication-style paper:
+
+- Introduction should establish the problem, gap, research question, contribution, and stakes across multiple paragraphs.
+- Literature/background should synthesize a curated body of evidence rather than list search hits.
+- Methods/data should make the analysis reproducible enough that another researcher could rerun it.
+- Results should present evidence, uncertainty, negative findings, and figure/table interpretation.
+- Discussion should compare results to prior evidence, state mechanisms, limitations, and implications.
+- Appendices should contain supplemental evidence or reproducibility artifacts, not material that compensates for an underwritten main text.
+
 ### Abstract (~200 words)
 
 Not a teaser. A complete summary.
@@ -83,10 +111,10 @@ Include:
 Figures go where they are discussed, not at the end.
 
 ```
-...groundwater declined significantly (Figure 3).
+...the primary outcome changed substantially after the intervention (Figure 3).
 
 ![Figure 3](objects/figure/fig_003.png)
-*Figure 3. Groundwater storage change 2000-2019...*
+*Figure 3. Outcome trend before and after the intervention...*
 
 This pattern suggests...
 ```

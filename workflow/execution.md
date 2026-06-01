@@ -39,6 +39,9 @@ Steps:
      - UNDERSTAND UNITS (critical!)
      - Visualize distributions
      - Document anomalies
+     - Record evidence mode:
+       raw_data_analysis, documented_statistics_synthesis, simulation,
+       literature_synthesis, protocol, or exploratory_scoping
   
   3. Method implementation
      - Implement incrementally
@@ -177,6 +180,12 @@ Script handles:
 - State index update
 - Event log update
 
+Before raw-data execution, data objects should point to acquired files under
+`objects/data/<data_id>/raw/` or processed files under
+`objects/data/<data_id>/processed/`, with `manifest_path`, `sha256`, and
+`access_status: acquired|processed`. If only dataset documentation exists, use
+`documented_statistics_synthesis` or `protocol`, not `raw_data_analysis`.
+
 LLM handles:
 - Method selection
 - Parameter choice
@@ -184,6 +193,12 @@ LLM handles:
 - Result interpretation
 - Sanity check
 - Next step decision
+
+If a script uses hand-entered values, literature summaries, documented
+statistics, or simulated data, the experiment object must say so in
+`attributes.evidence_mode`. It must not be labeled as completed raw-data
+analysis. A study can still be useful, but the output target and claims must be
+downgraded accordingly.
 
 ## Failure Memory: Active Query (NEW)
 
@@ -259,6 +274,9 @@ Before proceeding to Synthesis:
 
 - [ ] All hypotheses tested
 - [ ] Every result has figure
+- [ ] Evidence mode recorded for each experiment
+- [ ] Raw-data claims supported by actual acquired/processed data files or
+      documented data-access logs
 - [ ] Figures inspected and validated
 - [ ] **Method fidelity check passed** (implementation == design)
 - [ ] **Physical sanity check passed** (values reasonable)

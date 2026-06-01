@@ -24,6 +24,24 @@ Given a research goal, conducts complete scientific study and delivers publicati
 - Publication-quality visualizations
 - Complete manuscript with embedded figures and citations
 
+## Non-Negotiable Completion Gates
+
+SciPlex may stop with an honest partial result, protocol, or failure report, but
+it must not mark a workspace `COMPLETE` unless the requested target actually
+passes validation.
+
+- If `validate-workspace --require-complete` fails, keep the phase before
+  `COMPLETE`, keep final outputs in `draft` or `reviewed`, and write the
+  blockers into review/console objects.
+- Do not let review or console objects claim `pass` while blocking validation
+  issues exist.
+- When the user requests a publication-style `paper`, produce the full target:
+  section planning, enough cited literature, embedded real figures/tables,
+  evidence chains, and the configured word-count range.
+- If public data acquisition fails, record the failed attempt as an object with
+  URL, method, error, and next fallback. Then either try a documented fallback
+  or downgrade the evidence mode/output target honestly.
+
 ---
 
 ## Architecture
@@ -134,17 +152,22 @@ VALIDATING_RESULTS → SYNTHESIZING → WRITING → REVIEWING → COMPLETE
 
 Load `runtime/object_system.md` for workspace structure.
 
-Create workspace at `<current_working_directory>/sciplex/`:
+Create workspace at `<current_working_directory>/sciplex/` with
+`scripts/init_workspace.py`. Before any file write, read `sciplex/.sciplex`
+and `sciplex/context.md` if they exist. They are the workspace contract and
+brief context for path rules, evidence mode, and output target.
 
 ```
 sciplex/
+├── .sciplex           # Workspace contract and path rules
+├── context.md         # Brief context to reload before file operations
 ├── config/            # Project-level SciPlex configuration
 │   ├── .env.local     # Optional private project overrides (never commit)
 │   ├── config.yaml    # Optional non-secret project config
 │   └── resolved.json  # Optional resolved config snapshot for audit
 ├── state.json         # Object index
 ├── events.json        # Event log
-└── objects/           # All research content
+└── objects/           # All research artifacts
     ├── orchestrator/  # Question, hypotheses, progress
     ├── literature/    # Papers + notes
     ├── problem/       # Identified problems
@@ -162,6 +185,16 @@ sciplex/
 Research artifacts go in `objects/`. Project-specific configuration goes in
 `config/`. See `runtime/object_system.md` for structure and `config/README.md`
 for configuration precedence.
+
+Do not create research artifact directories directly under `sciplex/`.
+For example, use `sciplex/objects/data/`, not `sciplex/data/`. When unsure,
+ask the runtime helper for the canonical location:
+
+```bash
+python scripts/sciplex_runtime.py --workspace <current_working_directory> artifact-path \
+  --type data \
+  --filename data_001.json
+```
 
 **Configuration resolution:**
 
@@ -197,6 +230,21 @@ record events, refresh config snapshots, and log phase transitions. The runtime
 helper maintains the research ledger; the agent still makes all scientific
 judgments.
 
+Before writing, synthesizing, or marking research complete, run:
+
+```bash
+python scripts/sciplex_runtime.py --workspace <current_working_directory> validate-workspace
+```
+
+For final acceptance tests, require an actually completed workspace:
+
+```bash
+python scripts/sciplex_runtime.py --workspace <current_working_directory> validate-workspace --require-complete
+```
+
+Critical or major workspace issues block `COMPLETE` until fixed or explicitly
+downgraded with an honest scope change.
+
 ### 2. Formulate
 
 Load `workflow/formulation.md`, `core/epistemology.md`, and `strategy/problem_discovery.md`.
@@ -218,7 +266,24 @@ Generate:
 - Data objects
 - Strategy objects (method evaluation, budget allocation)
 
-**Quality Gate:** Methods match hypotheses? Data documented? Strategy evaluated? Confounders identified?
+For public datasets, acquire data artifacts into `objects/data/<data_id>/raw/`
+with provenance and checksum before claiming raw-data analysis. Use the generic
+acquisition helper when the source exposes a stable public URL:
+
+```bash
+python scripts/data_acquire.py --workspace <current_working_directory> \
+  --url "<public-data-url>" \
+  --name "<dataset name>" \
+  --source "<provider>"
+```
+
+If data access requires manual registration, JavaScript sessions, restricted
+licenses, or credentials, create a data object that records the access blocker
+and keep the evidence mode as protocol/scoping/synthesis until acquisition is
+complete.
+
+**Quality Gate:** Methods match hypotheses? Data acquired or access limits
+honestly recorded? Strategy evaluated? Confounders identified?
 
 ### 4. Execute
 
@@ -243,6 +308,8 @@ Generate:
 
 **Quality Gate:**
 - All hypotheses tested
+- Evidence mode recorded: raw-data analysis, documented-statistics synthesis,
+  simulation, literature synthesis, protocol, or exploratory scoping
 - Method fidelity check passed
 - Physical sanity check passed
 - Objectives progress checked
@@ -262,11 +329,16 @@ Generate:
 
 Load `workflow/writing.md`.
 
-Generate:
-- Paper object
-- Manuscript file
+Choose the output target before writing. Do not default every study to a paper.
+Use `workflow/writing.md` for target-specific standards. Common targets:
+report, paper, brief, protocol, registered-report outline, console-only audit.
 
-**Quality Gate:** Full structure? Figures embedded? >3000 words?
+Generate:
+- Paper/report object
+- Manuscript or report file
+
+**Quality Gate:** Target-specific structure? Figures embedded? Citation and
+word-count standards met or explicitly waived? Evidence mode matches claims?
 
 ### 7. Review
 
@@ -327,6 +399,9 @@ Output:
 |--------|---------|
 | `init_workspace.py` | Create workspace layout and redacted resolved config |
 | `sciplex_runtime.py` | Deterministic config, object, event, and phase bookkeeping |
+| `literature_search.py` | Provider-backed literature discovery candidate pools |
+| `audit_literature.py` | Provider-backed metadata audit for cited literature objects |
+| `data_acquire.py` | Public data download with provenance, checksum, and manifest |
 | `execute_analysis.py` | Deterministic analysis execution |
 | `validate_results.py` | Check result sanity |
 | `format_paper.py` | LaTeX/markdown formatting |

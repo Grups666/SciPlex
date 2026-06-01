@@ -29,11 +29,27 @@ Every figure should:
 - Legend if multiple elements
 - Colorblind-friendly palette (viridis, colorbrewer)
 
+**Publication-minimal style:**
+- Use a restrained palette with one accent color and neutral grays unless the
+  data require categorical colors.
+- Prefer direct labels or short legends; avoid large legend boxes when labels
+  can be placed near the data.
+- Remove chartjunk: heavy borders, dense gridlines, unnecessary backgrounds,
+  3D effects, shadows, emoji, and decorative icons.
+- Use light horizontal gridlines only when they aid comparison.
+- Put the statistical takeaway in the caption or subtitle, not as clutter
+  inside the plot area.
+- Use consistent typography and sizing across all main figures.
+- For skewed bar charts with one dominant category, use an inset, log scale,
+  split panel, or normalized companion view so smaller categories remain
+  readable.
+
 **Avoid:**
 - 3D plots (harder to read)
 - Rainbow colormap (misleading)
 - Too much in one figure (split instead)
 - Tiny text, illegible labels
+- Default plotting-library aesthetics when they look unfinished
 
 **Resolution:**
 - Publication: 300 DPI minimum
@@ -48,10 +64,10 @@ Figure X. [What this shows]. [Key pattern observed].
 
 Example:
 ```
-Figure 1. Spatial distribution of water-use hotspots (red) across 
-global land areas. Hotspots concentrated in major agricultural regions 
-(South Asia, North China Plain). Defined as cells where total water 
-use exceeds 75th percentile (WaterGAP v2.2e, 2000-2019 mean).
+Figure 1. Distribution of high-value observations (red) across the
+study area. Hotspots are defined as units where the measured outcome
+exceeds the 75th percentile. Values are averaged over the analysis
+period and derived from the stated source dataset.
 ```
 
 ## Figure Object Template
@@ -71,6 +87,7 @@ use exceeds 75th percentile (WaterGAP v2.2e, 2000-2019 mean).
     "format": "png",
     "dimensions": [1600, 900],
     "file_path": "objects/figure/fig_001.png"
+    "style_profile": "publication_minimal"
   }
 }
 ```

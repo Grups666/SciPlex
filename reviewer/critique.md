@@ -28,11 +28,18 @@ Red flags:
 - Designed: statistical method → Implemented: ad-hoc threshold (downgrade)
 - Designed: algorithmic classification → Implemented: manual rules (downgrade)
 - Manuscript claims "rigorous method" but code uses simplified approach
+- Output claims raw-data empirical analysis but implementation used documented
+  statistics, simulated values, examples, or literature summaries
 ```
 
 **Severity: CRITICAL if mismatch**
 
 This is scientific dishonesty, not just limitation.
+
+If raw data was promised but not acquired and processed, do not treat this as a
+minor limitation. Either run the raw-data workflow, or downgrade the output
+target and evidence mode to literature synthesis, documented-statistics
+synthesis, scoping analysis, or protocol.
 
 ### 2. Physical Sanity (NEW - Critical)
 
@@ -100,6 +107,26 @@ Red flags:
 - "X causes Y" without mechanism
 - "Statistically significant" but method was ad-hoc threshold
 
+### 4a. Result Consistency
+
+**Question:** Does the manuscript say the same thing as the tables, figures,
+and analysis outputs?
+
+Check:
+- Numeric coefficients, signs, sample sizes, dates, and units match the
+  experiment outputs and figure/table files.
+- Text does not describe a positive estimate as negative, a null result as
+  significant, or a descriptive association as causal.
+- Figure captions, result paragraphs, finding objects, and claim audits agree.
+- If specifications disagree, the disagreement is stated explicitly rather than
+  smoothed into a single narrative.
+
+Red flags:
+- A coefficient plot shows sign reversal while prose says all models agree
+- A table reports a smaller or different sample than the methods imply
+- A finding object preserves an outdated interpretation after results changed
+- Review passes without checking output numbers against generated artifacts
+
 ### 5. Evidence Chain Completeness
 
 **Question:** Can every claim trace back to data?
@@ -118,6 +145,29 @@ Red flags:
 - Claim with no experiment
 - Experiment with no data
 - Method with no implementation file
+- Data object only identifies a source but experiment claims processed results
+- Event log lacks create/update/transition events for objects supporting a finding
+
+### 5a. Workspace and Ledger Integrity
+
+**Question:** Did the run obey the SciPlex workspace contract?
+
+Run:
+
+```bash
+python scripts/sciplex_runtime.py --workspace <working-directory> validate-workspace
+```
+
+Check:
+- No research artifact folders directly under `sciplex/`
+- JSON files parse
+- Objects in `state.json` have matching files and paths
+- Object creation and transitions are covered by `events.json`
+- `context.md` and `.sciplex` exist and were followed
+
+Critical or major ledger issues block `COMPLETE`. They can be fixed by
+repairing the ledger, regenerating invalid objects, or honestly downgrading the
+run to a partial test.
 
 ### 6. Hypothesis Coverage
 
@@ -196,6 +246,30 @@ Red flags:
 - "No prior work" claim (usually false)
 - Ignoring contradictory literature
 - Misrepresenting prior findings
+- Search-result bibliography: many cited sources have no explicit relevance or
+  inclusion rationale
+- Weakly related background sources are used to inflate citation count instead
+  of supporting the paper's actual claims
+
+### 11. Manuscript Body Integrity
+
+**Question:** Is the submitted paper body itself journal-grade?
+
+For publication-style `paper` outputs:
+- Count the body separately from references, appendices, claim audits, and
+  reproducibility logs.
+- Check that Introduction, literature/background, methods/data, results,
+  discussion, and conclusion each have substantive section depth.
+- Verify the section order is readable and numbering is coherent.
+- Treat appendix-heavy word counts as a blocker when the main text is thin.
+
+Red flags:
+- A 7000-word Markdown file whose body is only a short report plus long
+  appendices
+- One-paragraph Introduction, Methods, Results, or Discussion sections
+- Generic numbered robustness notes or repeated limitation paragraphs
+- Appendices that contain prose padding rather than supplemental evidence,
+  tables, code outputs, derivations, or reproducibility details
 
 ## Review Process by Phase
 
@@ -295,6 +369,42 @@ WRITING review:
 - Critical assumption invalidated
 - Objective completely missing
 - Evidence fabricated
+- Claimed raw-data analysis without raw data acquisition and processing
+- Invalid JSON or broken state/event ledger supporting final claims
+
+**Major severity triggers:**
+- Output target standards not met without justification
+- Output exceeds target range and should be compressed before finalization
+- Literature coverage far below target for a publication-style paper
+- Figures are illustrative but described as empirical results
+- Final report or paper cites literature objects that remain only `identified`
+- Workspace marked COMPLETE without a console/audit object
+- Workspace marked COMPLETE without a problem object for the research tension/gap
+- Workspace marked COMPLETE with untested hypotheses
+- Workspace marked COMPLETE with unvalidated methods
+- Final output exists without an indexed review object
+- Final output state conflicts with workspace phase
+- Workspace marked COMPLETE while orchestrator objects are not complete
+- Final output object lacks a valid `file_path`
+- Final output `file_path` is relative to the outer workspace instead of the `sciplex/` root
+- Final paper lacks lineage metadata linking hypotheses, data/sources, and methods
+- Final paper lacks a structured key-claim audit linking claims to evidence, strength, and limitations
+- Final paper cites literature that is only marked `read` rather than `cited` or `validated`
+- Final bibliography contains many sources with no clear in-text use
+- Cited literature lacks stable identifiers and is not marked for verification
+- Final output lacks source-role coverage appropriate to the output target
+- Final output references findings without explicit evidence chains
+- Completed experiment lacks evidence mode or data/source inputs
+- Paper target lacks a section plan or section draft files
+- Finalized figure remains marked as needing generation
+- Finalized image file is a text placeholder or invalid image bytes
+- Final output lists figure objects but does not embed or link the figure files
+- Finalized figure/table lacks evidence sources or displayed-data metadata
+- Object-like JSON files under `objects/` are not indexed in `state.json`
+- Reference section does not match cited literature object metadata
+- Final output review lacks mandatory dimensions or only records a pass/fail result
+- Review or console claims validation passed while runtime validation has blocking issues
+- Final console validator result or object counts are stale relative to `state.json`
 
 ## Review Triggers
 
@@ -302,6 +412,21 @@ WRITING review:
 - After VALIDATING_RESULTS (before SYNTHESIZING) — sanity check
 - After WRITING (before COMPLETE) — final review
 - After REFRAMING — verify new direction
+
+Final-output reviews must be diagnostic, not ceremonial. For a final report or
+paper, record judgments for these dimensions at minimum:
+
+- `method_fidelity`
+- `evidence_chain`
+- `claim_validity`
+- `source_coverage`
+- `result_consistency`
+- `output_standards`
+- `limitations`
+- `overclaim`
+
+Each dimension should include enough detail for another agent to understand the
+defect or why it passed. A bare `passed: true` is not a review.
 
 **Automatic blocks:**
 - Any critical issue → block transition
